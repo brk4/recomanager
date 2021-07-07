@@ -10,11 +10,12 @@ from javax.swing import JButton, JFrame, JPanel, JComboBox, JCheckBox, ButtonGro
 from script.imglib import ImgLib
 from java.awt import event, Font
 from ch.psi.imagej.hdf5 import HDF5Reader, HDF5Utilities
-from hdf.object.h5 import H5File
+#from hdf.object.h5 import H5File
 
 global selectedDatasetField, flatFieldBox, world
 
-sys.path.append('C:/Users/benny/recomanager-ben/recomanager')
+#sys.path.append('C:/Users/benny/recomanager/recomanager')
+sys.path.append('/local/fast/conda/recomanager/recomanager')
 #sys.path.append('/das/work/p11/p11218/recomanager/RecoManager')
 #sys.path.append('/sls/X02DA/applications/fiji/Fiji_Java8.app/plugins/TOMCAT')
 import RecoPanel
