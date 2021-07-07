@@ -14,7 +14,7 @@ from ch.psi.imagej.hdf5 import HDF5Reader, HDF5Utilities
 
 global selectedDatasetField, flatFieldBox, world
 
-#sys.path.append('C:/Users/benny/recomanager/recomanager')
+#sys.path.append('C:/Users/benny/recomanager-ben/recomanager')
 sys.path.append('/local/fast/conda/recomanager/recomanager')
 #sys.path.append('/das/work/p11/p11218/recomanager/RecoManager')
 #sys.path.append('/sls/X02DA/applications/fiji/Fiji_Java8.app/plugins/TOMCAT')
@@ -581,209 +581,223 @@ def reconstruct(event):
         print("Submit full stack")
         nprjForReconstruction = logfileParameters.nprj
 
-        if recoParameters.algorithm==1:
-            fltpPattern="####"
+        # if recoParameters.algorithm==1:
+        #     fltpPattern="####"
         
-        threeSixtyOption="-d"
-        if recoParameters.threeSixtyVariable==1:
-            if recoParameters.approachBoxIndex==1:
-                if recoParameters.algorithm==0:
-                    if recoParameters.axisBoxIndex==0:
-                        threeSixtyOption="-d -S R"
-                    else:
-                        threeSixtyOption="-d -S L"
+        # threeSixtyOption="-d"
+        # if recoParameters.threeSixtyVariable==1:
+        #     if recoParameters.approachBoxIndex==1:
+        #         if recoParameters.algorithm==0:
+        #             if recoParameters.axisBoxIndex==0:
+        #                 threeSixtyOption="-d -S R"
+        #             else:
+        #                 threeSixtyOption="-d -S L"
         
-                if recoParameters.algorithm==1:
-                    nprjForReconstruction=str((int(logfileParameters.nprj)+1)/2)
-                    if len(nprjForReconstruction)==3:
-                        fltpPattern="###"
-                    elif len(nprjForReconstruction)==2:
-                        fltpPattern="##"
-                    elif len(nprjForReconstruction)==1:
-                        fltpPattern="#"
-            elif recoParameters.approachBoxIndex==0:
-                if recoParameters.axisBoxIndex==0:
-                    threeSixtyOption="-d -LL -r 0," + str(int(float(projectionWidth) - float(recoParameters.guiCenter))) + ",0,0"
-                    sinoSize = float(recoParameters.guiCenter)
-                elif recoParameters.axisBoxIndex==1:
-                    threeSixtyOption="-d -LL -r " + str(int(float(recoParameters.guiCenter)-1)) + ",0,0,0"
-                    sinoSize = float(projectionWidth) - float(recoParameters.guiCenter) - 1.0
+        #         if recoParameters.algorithm==1:
+        #             nprjForReconstruction=str((int(logfileParameters.nprj)+1)/2)
+        #             if len(nprjForReconstruction)==3:
+        #                 fltpPattern="###"
+        #             elif len(nprjForReconstruction)==2:
+        #                 fltpPattern="##"
+        #             elif len(nprjForReconstruction)==1:
+        #                 fltpPattern="#"
+        #     elif recoParameters.approachBoxIndex==0:
+        #         if recoParameters.axisBoxIndex==0:
+        #             threeSixtyOption="-d -LL -r 0," + str(int(float(projectionWidth) - float(recoParameters.guiCenter))) + ",0,0"
+        #             sinoSize = float(recoParameters.guiCenter)
+        #         elif recoParameters.axisBoxIndex==1:
+        #             threeSixtyOption="-d -LL -r " + str(int(float(recoParameters.guiCenter)-1)) + ",0,0,0"
+        #             sinoSize = float(projectionWidth) - float(recoParameters.guiCenter) - 1.0
 
-                ### Automatic crop
-                sinoPadSize = math.floor(sinoSize + sinoSize * 2 * float(recoParameters.zeroPadding))
-                totalPadSize = 2**(math.floor(math.log(sinoPadSize,2))+1)
-                print(totalPadSize)
-                recoParameters.roiX1 = str(int(math.floor((totalPadSize - 2*sinoSize)/2) + int(recoParameters.roiX1)))
-                recoParameters.roiY1 = str(int(math.floor((totalPadSize - 2*sinoSize)/2) + int(recoParameters.roiY1)))
-                if recoParameters.roiX2=="0":
-                    recoParameters.roiX2 = str(int(math.floor((totalPadSize - 2*sinoSize)/2) + 2*sinoSize))
-                else:
-                    recoParameters.roiX2 = str(int(math.floor((totalPadSize - 2*sinoSize)/2) + int(recoParameters.roiX2)))
-                if recoParameters.roiY2=="0":
-                    recoParameters.roiY2 = str(int(math.floor((totalPadSize - 2*sinoSize)/2) + 2*sinoSize))
-                else:
-                    recoParameters.roiY2 = str(int(math.floor((totalPadSize - 2*sinoSize)/2) + int(recoParameters.roiY2)))
+        #         ### Automatic crop
+        #         sinoPadSize = math.floor(sinoSize + sinoSize * 2 * float(recoParameters.zeroPadding))
+        #         totalPadSize = 2**(math.floor(math.log(sinoPadSize,2))+1)
+        #         print(totalPadSize)
+        #         recoParameters.roiX1 = str(int(math.floor((totalPadSize - 2*sinoSize)/2) + int(recoParameters.roiX1)))
+        #         recoParameters.roiY1 = str(int(math.floor((totalPadSize - 2*sinoSize)/2) + int(recoParameters.roiY1)))
+        #         if recoParameters.roiX2=="0":
+        #             recoParameters.roiX2 = str(int(math.floor((totalPadSize - 2*sinoSize)/2) + 2*sinoSize))
+        #         else:
+        #             recoParameters.roiX2 = str(int(math.floor((totalPadSize - 2*sinoSize)/2) + int(recoParameters.roiX2)))
+        #         if recoParameters.roiY2=="0":
+        #             recoParameters.roiY2 = str(int(math.floor((totalPadSize - 2*sinoSize)/2) + 2*sinoSize))
+        #         else:
+        #             recoParameters.roiY2 = str(int(math.floor((totalPadSize - 2*sinoSize)/2) + int(recoParameters.roiY2)))
 
-        if recoParameters.shifting=="True":
-            shiftingOption="-q"
-        elif recoParameters.shifting=="False":
-            shiftingOption=""
-        else:
-            print("The shifting option " + recoParameters.shifting + " is not implemented")
-            sys.exit()
+        # if recoParameters.shifting=="True":
+        #     shiftingOption="-q"
+        # elif recoParameters.shifting=="False":
+        #     shiftingOption=""
+        # else:
+        #     print("The shifting option " + recoParameters.shifting + " is not implemented")
+        #     sys.exit()
             
-        if logfileParameters.spOption=="True":
-            sp="-sp"
-        else:
-            sp=""
+        # if logfileParameters.spOption=="True":
+        #     sp="-sp"
+        # else:
+        #     sp=""
             
-        if recoParameters.zingerOption=="False":
-            zingerLine=""
-        elif recoParameters.zingerOption=="True":
-            zingerLine= "-z s -H " + recoParameters.threshold + " -w " + recoParameters.kernelWidth
-        else:
-            print("The zinger option " + recoParameters.zingerOption + " is not implemented")
-            sys.exit()
+        # if recoParameters.zingerOption=="False":
+        #     zingerLine=""
+        # elif recoParameters.zingerOption=="True":
+        #     zingerLine= "-z s -H " + recoParameters.threshold + " -w " + recoParameters.kernelWidth
+        # else:
+        #     print("The zinger option " + recoParameters.zingerOption + " is not implemented")
+        #     sys.exit()
 
-        angleFileOption=" "
-        if recoParameters.geometryIndex==6:
-            if os.path.isfile(logfileParameters.dataset+"/"+logfileParameters.samplename+".h5"):
-                angleFileOption=" --separateAngles " + logfileParameters.dataset+"/"+logfileParameters.samplename+".h5"
-            else:
-                print("With tiff files, the HDF5 angle file needs to exist")
+        # angleFileOption=" "
+        # if recoParameters.geometryIndex==6:
+        #     if os.path.isfile(logfileParameters.dataset+"/"+logfileParameters.samplename+".h5"):
+        #         angleFileOption=" --separateAngles " + logfileParameters.dataset+"/"+logfileParameters.samplename+".h5"
+        #     else:
+        #         print("With tiff files, the HDF5 angle file needs to exist")
                 
-        if recoParameters.paganinPaddingIndex!="0":
-            paganinPaddingOption = "-p " + str(recoParameters.paganinPaddingIndex)
-        else:
-            paganinPaddingOption = ""
-        if recoParameters.stabilizer!="" and recoParameters.width !="":
-            deconvolutionOption = "-s " + str(recoParameters.stabilizer) + " -g " + str(recoParameters.width)
-        else:
-            deconvolutionOption = ""
+        # if recoParameters.paganinPaddingIndex!="0":
+        #     paganinPaddingOption = "-p " + str(recoParameters.paganinPaddingIndex)
+        # else:
+        #     paganinPaddingOption = ""
+        # if recoParameters.stabilizer!="" and recoParameters.width !="":
+        #     deconvolutionOption = "-s " + str(recoParameters.stabilizer) + " -g " + str(recoParameters.width)
+        # else:
+        #     deconvolutionOption = ""
 
-        if recoParameters.guiCenter=="0":
-            centerOption=""
-        else:
-            if recoParameters.threeSixtyVariable==1 and recoParameters.algorithm==0 and recoParameters.approachBoxIndex==1:
-                centerOption="-c " + recoParameters.overlapCenter + "," + recoParameters.guiCenter
-            else:
-                centerOption="-c " + recoParameters.guiCenter
+        # if recoParameters.guiCenter=="0":
+        #     centerOption=""
+        # else:
+        #     if recoParameters.threeSixtyVariable==1 and recoParameters.algorithm==0 and recoParameters.approachBoxIndex==1:
+        #         centerOption="-c " + recoParameters.overlapCenter + "," + recoParameters.guiCenter
+        #     else:
+        #         centerOption="-c " + recoParameters.guiCenter
 
-        ringOptionText = ""
-        if recoParameters.ringOption=="0" or recoParameters.ringOption=="3":
-            ringOptionText = " -L 0 "
-        elif recoParameters.ringOption=="1":
-            ringOptionText = " -L 1 "
-        elif recoParameters.ringOption=="2":
-            ringOptionText = " -L 0 -sr " + recoParameters.windowSize
-        elif recoParameters.ringOption=="4":
-            ringOptionText = " -L 0 -sr " + recoParameters.snr + "," + recoParameters.windowSizeL + "," + recoParameters.windowSizeSM
+        # ringOptionText = ""
+        # if recoParameters.ringOption=="0" or recoParameters.ringOption=="3":
+        #     ringOptionText = " -L 0 "
+        # elif recoParameters.ringOption=="1":
+        #     ringOptionText = " -L 1 "
+        # elif recoParameters.ringOption=="2":
+        #     ringOptionText = " -L 0 -sr " + recoParameters.windowSize
+        # elif recoParameters.ringOption=="4":
+        #     ringOptionText = " -L 0 -sr " + recoParameters.snr + "," + recoParameters.windowSizeL + "," + recoParameters.windowSizeSM
         
-        if recoParameters.outputFormat=="0":
-            firstStringPart="rec_DMP_"
-        elif recoParameters.outputFormat=="8":
-            firstStringPart="rec_8bit_"
-        elif recoParameters.outputFormat=="16":
-            firstStringPart="rec_16bit_"
-        else:
-            IJ.showMessage("The selected output format has not been implemented yet!")
+        # if recoParameters.outputFormat=="0":
+        #     firstStringPart="rec_DMP_"
+        # elif recoParameters.outputFormat=="8":
+        #     firstStringPart="rec_8bit_"
+        # elif recoParameters.outputFormat=="16":
+        #     firstStringPart="rec_16bit_"
+        # else:
+        #     IJ.showMessage("The selected output format has not been implemented yet!")
 
-        if recoParameters.algorithm==0:
-            secondStringPart=""
-            fltpOnlyReconstruction=2
-        elif recoParameters.algorithm==1:
-            secondStringPart="Paganin_"
-            if os.path.isdir(logfileParameters.datasetOut + "/fltp"):
-                if os.listdir(logfileParameters.datasetOut + "/fltp")!=[]:
-                    fltpOnlyReconstruction=1
-                else:
-                    os.rmdir(logfileParameters.datasetOut + "/fltp")
-                    fltpOnlyReconstruction=0
-                    if recoParameters.shifting=="True":
-                        shiftingOption="-Q"
-                    else:
-                        shiftingOption=""
-                    if recoParameters.zingerOption=="False":
-                        zingerLine=""
-                    else:
-                        zingerLine= "-z -H " + recoParameters.threshold + " -w " + recoParameters.kernelWidth
-            else:
-                fltpOnlyReconstruction=0
-                if recoParameters.shifting=="True":
-                    shiftingOption="-Q"
-                else:
-                    shiftingOption=""
-                if recoParameters.zingerOption=="False":
-                    zingerLine=""
-                else:
-                    zingerLine= "-z -H " + recoParameters.threshold + " -w " + recoParameters.kernelWidth
-        else:
-            IJ.showMessage("The selected algorithm has not been implemented yet!")
+        # if recoParameters.algorithm==0:
+        #     secondStringPart=""
+        #     fltpOnlyReconstruction=2
+        # elif recoParameters.algorithm==1:
+        #     secondStringPart="Paganin_"
+        #     if os.path.isdir(logfileParameters.datasetOut + "/fltp"):
+        #         if os.listdir(logfileParameters.datasetOut + "/fltp")!=[]:
+        #             fltpOnlyReconstruction=1
+        #         else:
+        #             os.rmdir(logfileParameters.datasetOut + "/fltp")
+        #             fltpOnlyReconstruction=0
+        #             if recoParameters.shifting=="True":
+        #                 shiftingOption="-Q"
+        #             else:
+        #                 shiftingOption=""
+        #             if recoParameters.zingerOption=="False":
+        #                 zingerLine=""
+        #             else:
+        #                 zingerLine= "-z -H " + recoParameters.threshold + " -w " + recoParameters.kernelWidth
+        #     else:
+        #         fltpOnlyReconstruction=0
+        #         if recoParameters.shifting=="True":
+        #             shiftingOption="-Q"
+        #         else:
+        #             shiftingOption=""
+        #         if recoParameters.zingerOption=="False":
+        #             zingerLine=""
+        #         else:
+        #             zingerLine= "-z -H " + recoParameters.threshold + " -w " + recoParameters.kernelWidth
+        # else:
+        #     IJ.showMessage("The selected algorithm has not been implemented yet!")
 
-        selectedReconstructionDirectory=logfileParameters.datasetOut + "/" + firstStringPart + secondStringPart + recoParameters.postfix
+        # selectedReconstructionDirectory=logfileParameters.datasetOut + "/" + firstStringPart + secondStringPart + recoParameters.postfix
 
-        chosenResponseOption=JOptionPane.YES_OPTION
-        if os.path.isdir(selectedReconstructionDirectory):
-            chosenResponseOption = JOptionPane.showConfirmDialog(None, "The directory " + selectedReconstructionDirectory + " already exist and is going to be overwritten!\n\n                                                                           Do you want to continue?", "Existing reconstruction directory", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        # chosenResponseOption=JOptionPane.YES_OPTION
+        # if os.path.isdir(selectedReconstructionDirectory):
+        #     chosenResponseOption = JOptionPane.showConfirmDialog(None, "The directory " + selectedReconstructionDirectory + " already exist and is going to be overwritten!\n\n                                                                           Do you want to continue?", "Existing reconstruction directory", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
-        if chosenResponseOption == JOptionPane.YES_OPTION:
+        # if chosenResponseOption == JOptionPane.YES_OPTION:
         
-            if recoParameters.outputFormat!="0" and recoParameters.minimum=="0" and recoParameters.maximum=="0":
-                IJ.showMessage("The grey level limits have not been set!")
+        #     if recoParameters.outputFormat!="0" and recoParameters.minimum=="0" and recoParameters.maximum=="0":
+        #         IJ.showMessage("The grey level limits have not been set!")
 
-            elif (recoParameters.delta=="" or recoParameters.beta=="" or recoParameters.distance=="") and fltpOnlyReconstruction==0:
-                IJ.showMessage("The parameters for the Paganin phase retrieval have not been set!")
+        #     elif (recoParameters.delta=="" or recoParameters.beta=="" or recoParameters.distance=="") and fltpOnlyReconstruction==0:
+        #         IJ.showMessage("The parameters for the Paganin phase retrieval have not been set!")
 
-            elif fltpOnlyReconstruction==0 and recoParameters.threeSixtyVariable==1:
-                IJ.showMessage("For 360 degree scans, the fltp need to be first created!")
+        #     elif fltpOnlyReconstruction==0 and recoParameters.threeSixtyVariable==1:
+        #         IJ.showMessage("For 360 degree scans, the fltp need to be first created!")
 
-            else:
+        #     else:
 
-                if world=="offline":
-                    script = "/afs/psi/project/TOMCAT_pipeline/" + recoParameters.usedBranch + "/tomcat_pipeline/bin/prj2sinSLURM.sh --queue=hour "
-                else:
-                    script = "/afs/psi/project/TOMCAT_pipeline/" + recoParameters.usedBranch + "/tomcat_pipeline/bin/prj2sinSLURM.sh --queue=" + recoParameters.queue + " --nnodes=" + str(recoParameters.nnodes)
+        #         if world=="offline":
+        #             script = "/afs/psi/project/TOMCAT_pipeline/" + recoParameters.usedBranch + "/tomcat_pipeline/bin/prj2sinSLURM.sh --queue=hour "
+        #         else:
+        #             script = "/afs/psi/project/TOMCAT_pipeline/" + recoParameters.usedBranch + "/tomcat_pipeline/bin/prj2sinSLURM.sh --queue=" + recoParameters.queue + " --nnodes=" + str(recoParameters.nnodes)
             
-                if recoParameters.algorithm==0:
-                    print("Absorption")
-                    if logfileParameters.datasetType=="tiff":
-                        command = script + " --jobname=x" + logfileParameters.samplename + " --logdir=" + basedir + "/logs/ " + threeSixtyOption + " -k 0 -R " + recoParameters.postfix + " -Q " + logfileParameters.logfile + " " + centerOption + " -a " + recoParameters.rotation + " -G " + str(recoParameters.geometryIndex) + " " + angleFileOption + " -e " + recoParameters.roiX1 + "," + recoParameters.roiY1 + "," + recoParameters.roiX2 + "," + recoParameters.roiY2 + " -t " + recoParameters.outputFormat + " -n " + recoParameters.minimum + " -x " + recoParameters.maximum  + " -F " + recoParameters.filterOption + " -U " + recoParameters.cutOffFrequency + " -I 1 -Z " + recoParameters.zeroPadding + " -f " + nprjForReconstruction + "," + logfileParameters.ndrk + "," + logfileParameters.nflt + ",0,0 " + zingerLine + ringOptionText + " -y " + recoParameters.waveletType + " -V " + recoParameters.waveletMinComponent + ":" + recoParameters.waveletMaxComponent + " -E " + recoParameters.waveletFilterWidth + " -M " + recoParameters.waveletPadding + " " + shiftingOption + " " + sp + " -p " + logfileParameters.samplename + "####.tiff -o " + logfileParameters.datasetOut + "/sin/ " + logfileParameters.dataset + "/tiff/"            
-                    else:
-                        command = script + " --jobname=x" + logfileParameters.samplename + " --logdir=" + basedir + "/logs/ " + threeSixtyOption + " -k 0 -R " + recoParameters.postfix + " -Q " + logfileParameters.logfile + " " + centerOption + " -a " + recoParameters.rotation + " -G " + str(recoParameters.geometryIndex) + " " + angleFileOption + " -e " + recoParameters.roiX1 + "," + recoParameters.roiY1 + "," + recoParameters.roiX2 + "," + recoParameters.roiY2 + " -t " + recoParameters.outputFormat + " -n " + recoParameters.minimum + " -x " + recoParameters.maximum  + " -F " + recoParameters.filterOption + " -U " + recoParameters.cutOffFrequency + " -I 2 -Z " + recoParameters.zeroPadding + " -f " + nprjForReconstruction + "," + logfileParameters.ndrk + "," + logfileParameters.nflt + ",0,0 " + zingerLine + ringOptionText + " -y " + recoParameters.waveletType + " -V " + recoParameters.waveletMinComponent + ":" + recoParameters.waveletMaxComponent + " -E " + recoParameters.waveletFilterWidth + " -M " + recoParameters.waveletPadding + " " + shiftingOption + " " + sp + " -p " + logfileParameters.samplename + " -o " + logfileParameters.datasetOut + "/sin/ " + logfileParameters.dataset + "/" + logfileParameters.samplename + ".h5"        
-                elif recoParameters.algorithm==1:
-                    print("Paganin")
-                    if fltpOnlyReconstruction==1:
-                        command = script + " --jobname=x" + logfileParameters.samplename + " --logdir=" + basedir + "/logs/ " + threeSixtyOption + " -k 0 -g 0 -R Paganin_" + recoParameters.postfix + " -Q " + logfileParameters.logfile + " " + centerOption + " -a " + recoParameters.rotation + " -G " + str(recoParameters.geometryIndex) + " " + angleFileOption + " -e " + recoParameters.roiX1 + "," + recoParameters.roiY1 + "," + recoParameters.roiX2 + "," + recoParameters.roiY2 + " -t " + recoParameters.outputFormat + " -n " + recoParameters.minimum + " -x " + recoParameters.maximum  + " -F " + recoParameters.filterOption + " -U " + recoParameters.cutOffFrequency + " -I 0 -Z " + recoParameters.zeroPadding + " -f " + nprjForReconstruction + ",0,0,0,0 " + zingerLine + ringOptionText + " -y " + recoParameters.waveletType + " -V " + recoParameters.waveletMinComponent + ":" + recoParameters.waveletMaxComponent + " -E " + recoParameters.waveletFilterWidth + " -M " + recoParameters.waveletPadding + " " + shiftingOption + " " + sp + " -p " + logfileParameters.samplename + fltpPattern + ".fltp.DMP -o " + logfileParameters.datasetOut + "/sin/ " + logfileParameters.datasetOut + "/fltp/"            
-                    else:
-                        if recoParameters.paganinPaddingIndex!="0":
-                            paganinPaddingOption = "-p " + str(recoParameters.paganinPaddingIndex)
-                        else:
-                            paganinPaddingOption = " "
-                        if recoParameters.stabilizer!="" and recoParameters.width !="":
-                            deconvolutionOption = "-s " + str(recoParameters.stabilizer) + " -g " + str(recoParameters.width)
-                        else:
-                            deconvolutionOption = ""
+        #         if recoParameters.algorithm==0:
+        #             print("Absorption")
+        #             if logfileParameters.datasetType=="tiff":
+        #                 command = script + " --jobname=x" + logfileParameters.samplename + " --logdir=" + basedir + "/logs/ " + threeSixtyOption + " -k 0 -R " + recoParameters.postfix + " -Q " + logfileParameters.logfile + " " + centerOption + " -a " + recoParameters.rotation + " -G " + str(recoParameters.geometryIndex) + " " + angleFileOption + " -e " + recoParameters.roiX1 + "," + recoParameters.roiY1 + "," + recoParameters.roiX2 + "," + recoParameters.roiY2 + " -t " + recoParameters.outputFormat + " -n " + recoParameters.minimum + " -x " + recoParameters.maximum  + " -F " + recoParameters.filterOption + " -U " + recoParameters.cutOffFrequency + " -I 1 -Z " + recoParameters.zeroPadding + " -f " + nprjForReconstruction + "," + logfileParameters.ndrk + "," + logfileParameters.nflt + ",0,0 " + zingerLine + ringOptionText + " -y " + recoParameters.waveletType + " -V " + recoParameters.waveletMinComponent + ":" + recoParameters.waveletMaxComponent + " -E " + recoParameters.waveletFilterWidth + " -M " + recoParameters.waveletPadding + " " + shiftingOption + " " + sp + " -p " + logfileParameters.samplename + "####.tiff -o " + logfileParameters.datasetOut + "/sin/ " + logfileParameters.dataset + "/tiff/"            
+        #             else:
+        #                 command = script + " --jobname=x" + logfileParameters.samplename + " --logdir=" + basedir + "/logs/ " + threeSixtyOption + " -k 0 -R " + recoParameters.postfix + " -Q " + logfileParameters.logfile + " " + centerOption + " -a " + recoParameters.rotation + " -G " + str(recoParameters.geometryIndex) + " " + angleFileOption + " -e " + recoParameters.roiX1 + "," + recoParameters.roiY1 + "," + recoParameters.roiX2 + "," + recoParameters.roiY2 + " -t " + recoParameters.outputFormat + " -n " + recoParameters.minimum + " -x " + recoParameters.maximum  + " -F " + recoParameters.filterOption + " -U " + recoParameters.cutOffFrequency + " -I 2 -Z " + recoParameters.zeroPadding + " -f " + nprjForReconstruction + "," + logfileParameters.ndrk + "," + logfileParameters.nflt + ",0,0 " + zingerLine + ringOptionText + " -y " + recoParameters.waveletType + " -V " + recoParameters.waveletMinComponent + ":" + recoParameters.waveletMaxComponent + " -E " + recoParameters.waveletFilterWidth + " -M " + recoParameters.waveletPadding + " " + shiftingOption + " " + sp + " -p " + logfileParameters.samplename + " -o " + logfileParameters.datasetOut + "/sin/ " + logfileParameters.dataset + "/" + logfileParameters.samplename + ".h5"        
+        #         elif recoParameters.algorithm==1:
+        #             print("Paganin")
+        #             if fltpOnlyReconstruction==1:
+        #                 command = script + " --jobname=x" + logfileParameters.samplename + " --logdir=" + basedir + "/logs/ " + threeSixtyOption + " -k 0 -g 0 -R Paganin_" + recoParameters.postfix + " -Q " + logfileParameters.logfile + " " + centerOption + " -a " + recoParameters.rotation + " -G " + str(recoParameters.geometryIndex) + " " + angleFileOption + " -e " + recoParameters.roiX1 + "," + recoParameters.roiY1 + "," + recoParameters.roiX2 + "," + recoParameters.roiY2 + " -t " + recoParameters.outputFormat + " -n " + recoParameters.minimum + " -x " + recoParameters.maximum  + " -F " + recoParameters.filterOption + " -U " + recoParameters.cutOffFrequency + " -I 0 -Z " + recoParameters.zeroPadding + " -f " + nprjForReconstruction + ",0,0,0,0 " + zingerLine + ringOptionText + " -y " + recoParameters.waveletType + " -V " + recoParameters.waveletMinComponent + ":" + recoParameters.waveletMaxComponent + " -E " + recoParameters.waveletFilterWidth + " -M " + recoParameters.waveletPadding + " " + shiftingOption + " " + sp + " -p " + logfileParameters.samplename + fltpPattern + ".fltp.DMP -o " + logfileParameters.datasetOut + "/sin/ " + logfileParameters.datasetOut + "/fltp/"            
+        #             else:
+        #                 if recoParameters.paganinPaddingIndex!="0":
+        #                     paganinPaddingOption = "-p " + str(recoParameters.paganinPaddingIndex)
+        #                 else:
+        #                     paganinPaddingOption = " "
+        #                 if recoParameters.stabilizer!="" and recoParameters.width !="":
+        #                     deconvolutionOption = "-s " + str(recoParameters.stabilizer) + " -g " + str(recoParameters.width)
+        #                 else:
+        #                     deconvolutionOption = ""
                             
-                        if logfileParameters.datasetType=="tiff":
-                            command = "/sls/X02DA/applications/tomcat-operation-scripts/reco_tools/recooff_paganin.py -b " + recoParameters.branch + " -q " + recoParameters.queue + " -N " + str(recoParameters.nnodes) + " -R " + recoParameters.postfix + " " + centerOption + " -a " + recoParameters.rotation + " -G " + str(recoParameters.geometryIndex) + " " + angleFileOption + " -r " + recoParameters.roiX1 + "," + recoParameters.roiY1 + "," + recoParameters.roiX2 + "," + recoParameters.roiY2 + " -t " + recoParameters.outputFormat + " -n " + recoParameters.minimum + " -x " + recoParameters.maximum + " -U " + recoParameters.cutOffFrequency + " -Z " + recoParameters.zeroPadding + ringOptionText + " -y " + recoParameters.waveletType + " -V " + recoParameters.waveletMinComponent + ":" + recoParameters.waveletMaxComponent + " -E " + recoParameters.waveletFilterWidth + " -M " + recoParameters.waveletPadding + " " + deconvolutionOption + " " + paganinPaddingOption + " " + shiftingOption + " " + zingerLine + " " + logfileParameters.dataset + "/tiff " + recoParameters.delta + " " + recoParameters.beta + " " + recoParameters.distance
-                        else:
-                            command = "/sls/X02DA/applications/tomcat-operation-scripts/reco_tools/recooff_paganin.py -b " + recoParameters.branch + " -q " + recoParameters.queue + " -N " + str(recoParameters.nnodes) + " -R " + recoParameters.postfix + " " + centerOption + " -a " + recoParameters.rotation + " -G " + str(recoParameters.geometryIndex) + " " + angleFileOption + " -r " + recoParameters.roiX1 + "," + recoParameters.roiY1 + "," + recoParameters.roiX2 + "," + recoParameters.roiY2 + " -t " + recoParameters.outputFormat + " -n " + recoParameters.minimum + " -x " + recoParameters.maximum + " -U " + recoParameters.cutOffFrequency + " -Z " + recoParameters.zeroPadding + ringOptionText + " -y " + recoParameters.waveletType + " -V " + recoParameters.waveletMinComponent + ":" + recoParameters.waveletMaxComponent + " -E " + recoParameters.waveletFilterWidth + " -M " + recoParameters.waveletPadding + " " + deconvolutionOption + " " + paganinPaddingOption + " " + shiftingOption + " " + zingerLine + " " + logfileParameters.dataset + " " + recoParameters.delta + " " + recoParameters.beta + " " + recoParameters.distance                        
-                else:
-                    IJ.showMessage("This option has not been implemented yet!" )
+        #                 if logfileParameters.datasetType=="tiff":
+        #                     command = "/sls/X02DA/applications/tomcat-operation-scripts/reco_tools/recooff_paganin.py -b " + recoParameters.branch + " -q " + recoParameters.queue + " -N " + str(recoParameters.nnodes) + " -R " + recoParameters.postfix + " " + centerOption + " -a " + recoParameters.rotation + " -G " + str(recoParameters.geometryIndex) + " " + angleFileOption + " -r " + recoParameters.roiX1 + "," + recoParameters.roiY1 + "," + recoParameters.roiX2 + "," + recoParameters.roiY2 + " -t " + recoParameters.outputFormat + " -n " + recoParameters.minimum + " -x " + recoParameters.maximum + " -U " + recoParameters.cutOffFrequency + " -Z " + recoParameters.zeroPadding + ringOptionText + " -y " + recoParameters.waveletType + " -V " + recoParameters.waveletMinComponent + ":" + recoParameters.waveletMaxComponent + " -E " + recoParameters.waveletFilterWidth + " -M " + recoParameters.waveletPadding + " " + deconvolutionOption + " " + paganinPaddingOption + " " + shiftingOption + " " + zingerLine + " " + logfileParameters.dataset + "/tiff " + recoParameters.delta + " " + recoParameters.beta + " " + recoParameters.distance
+        #                 else:
+        #                     command = "/sls/X02DA/applications/tomcat-operation-scripts/reco_tools/recooff_paganin.py -b " + recoParameters.branch + " -q " + recoParameters.queue + " -N " + str(recoParameters.nnodes) + " -R " + recoParameters.postfix + " " + centerOption + " -a " + recoParameters.rotation + " -G " + str(recoParameters.geometryIndex) + " " + angleFileOption + " -r " + recoParameters.roiX1 + "," + recoParameters.roiY1 + "," + recoParameters.roiX2 + "," + recoParameters.roiY2 + " -t " + recoParameters.outputFormat + " -n " + recoParameters.minimum + " -x " + recoParameters.maximum + " -U " + recoParameters.cutOffFrequency + " -Z " + recoParameters.zeroPadding + ringOptionText + " -y " + recoParameters.waveletType + " -V " + recoParameters.waveletMinComponent + ":" + recoParameters.waveletMaxComponent + " -E " + recoParameters.waveletFilterWidth + " -M " + recoParameters.waveletPadding + " " + deconvolutionOption + " " + paganinPaddingOption + " " + shiftingOption + " " + zingerLine + " " + logfileParameters.dataset + " " + recoParameters.delta + " " + recoParameters.beta + " " + recoParameters.distance                        
+        #         else:
+        #             IJ.showMessage("This option has not been implemented yet!" )
                     
-                print(command)
-                os.system(command)
+        #         print(command)
+        #         os.system(command)
         
-                if os.path.isdir(basedir + "/log")==True:
-                    pass
-                else:
-                    os.mkdir(basedir + "/log")
+        #         if os.path.isdir(basedir + "/log")==True:
+        #             pass
+        #         else:
+        #             os.mkdir(basedir + "/log")
     
-                FILELIST = open(basedir + "/log/command_list.txt","a")
-                FILELIST.write(command + "\n")
-                FILELIST.close()
-                recoParameters.writeParametersToFile("local",logfileParameters.dataset,logfileParameters.datasetOut)
-                recoParameters.writeParametersToFile("scratch")
+        #         FILELIST = open(basedir + "/log/command_list.txt","a")
+        #         FILELIST.write(command + "\n")
+        #         FILELIST.close()
+        #         recoParameters.writeParametersToFile("local",logfileParameters.dataset,logfileParameters.datasetOut)
+        #         recoParameters.writeParametersToFile("scratch")
+
+        recoParameters.sliceNumber=fields.sliceField.getText()
+        recoParameters.centerNumber=fields.centerField.getText()
+        #print(recoParameters.sliceNumber)
+        #print(recoParameters.centerNumber)
+        command = "tomopy recon --file-name " + logfileParameters.filepath + logfileParameters.dataset + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type full"
+        print(command)
+        os.system(command)
+        tempfilepath = os.path.normpath(logfileParameters.filepath)
+        tempdataset = logfileParameters.dataset.rstrip(".h5")
+
+        #recon_filename = tempfilepath + "_rec\\slice_rec\\recon_" + tempdataset + ".tiff"
+        #imageResult = IJ.openImage(recon_filename)
+        #imageResult.show()
 
 class sliceSelection(MouseAdapter):
     def mousePressed(self,event):

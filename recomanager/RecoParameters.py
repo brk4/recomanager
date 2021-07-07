@@ -84,27 +84,27 @@ class RecoParameters:
 
 	def readParametersFromFile(self,whichfile,dataset="",datasetOut=""):
 	
-		if whichfile == "scratch":
-			# Read parameters from scratch file
-			print "Read from scratch file"
-			if self.world=="offline":
-				userId=os.getlogin()
-				localFile = "/tmp/GUIParameters"+str(userId)+".txt"
-			elif self.world=="online":
-				userId=os.getlogin()
-				localFile = "/scratch/GUIParameters"+str(userId)+".txt"
-			else:
-				print "Unknown environment!" 
-		else:
+		# if whichfile == "scratch":
+		# 	# Read parameters from scratch file
+		# 	print "Read from scratch file"
+		# 	if self.world=="offline":
+		# 		userId=os.getlogin()
+		# 		localFile = "/tmp/GUIParameters"+str(userId)+".txt"
+		# 	elif self.world=="online":
+		# 		userId=os.getlogin()
+		# 		localFile = "/scratch/GUIParameters"+str(userId)+".txt"
+		# 	else:
+		# 		print "Unknown environment!" 
+		# else:
 			# Read parameters from local file
-			print "Read from local file"
+		print "Read from local file"
 
-			localFile = datasetOut + "/GUIParameters.txt"
-			if self.world=="offline":
-				if os.path.isfile(localFile):
-					pass
-				else:
-					localFile = dataset + "/GUIParameters.txt"	
+		localFile = "C:/Users/benny/GUIParameters.txt"
+			# if self.world=="offline":
+			# 	if os.path.isfile(localFile):
+			# 		pass
+			# 	else:
+			# 		localFile = dataset + "/GUIParameters.txt"	
 		print localFile
 		
 		self.guiCenter = self.fields.centerField.getText()
@@ -130,6 +130,8 @@ class RecoParameters:
 	   					self.postfix=linelist[1]
 	   			elif linelist[0]=="Rotation":
 					self.rotation=linelist[1]
+				elif linelist[0]=="RotationCenter":
+					self.centerNumber==linelist[1]
 	   			elif linelist[0]=="Filter":
 	   				self.filterIndex=int(linelist[1])
 	   			elif linelist[0]=="Cutoff":
