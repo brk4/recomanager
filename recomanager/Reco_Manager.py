@@ -10,12 +10,12 @@ from javax.swing import JButton, JFrame, JPanel, JComboBox, JCheckBox, ButtonGro
 from script.imglib import ImgLib
 from java.awt import event, Font
 from ch.psi.imagej.hdf5 import HDF5Reader, HDF5Utilities
-#from hdf.object.h5 import H5File
+from hdf.object.h5 import H5File
 
 global selectedDatasetField, flatFieldBox, world
 
-#sys.path.append('C:/Users/benny/recomanager-ben/recomanager')
-sys.path.append('/local/fast/conda/recomanager/recomanager')
+sys.path.append('C:/Users/benny/recomanager-ben/recomanager')
+#sys.path.append('/local/fast/conda/recomanager/recomanager')
 #sys.path.append('/das/work/p11/p11218/recomanager/RecoManager')
 #sys.path.append('/sls/X02DA/applications/fiji/Fiji_Java8.app/plugins/TOMCAT')
 import RecoPanel
@@ -553,10 +553,10 @@ def reconstruct(event):
             command = "tomopy recon --file-name " + logfileParameters.filepath + logfileParameters.dataset + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type slice"
             print(command)
             os.system(command)
-            tempfilepath = os.path.normpath(logfileParameters.filepath)
-            tempdataset = logfileParameters.dataset.rstrip(".h5")
+            tempfilepath = os.path.normpath(logfileParameters.filepath) + "_rec"
+            tempdataset = "recon_" + logfileParameters.dataset.rstrip(".h5") + ".tiff"
 
-            recon_filename = tempfilepath + "_rec\\slice_rec\\recon_" + tempdataset + ".tiff"
+            recon_filename = os.path.join(tempfilepath, "slice_rec", tempdataset)
             imageResult = IJ.openImage(recon_filename)
             imageResult.show()
 
