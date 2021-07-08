@@ -1,5 +1,6 @@
 import os
 import sys
+from os.path import expanduser
 
 class RecoParameters:
 
@@ -98,8 +99,9 @@ class RecoParameters:
 		# else:
 			# Read parameters from local file
 		print "Read from local file"
+		home = expanduser("~")
 
-		localFile = "C:/Users/benny/GUIParameters.txt"
+		localFile = os.path.join(home, "GUIParameters.txt")
 			# if self.world=="offline":
 			# 	if os.path.isfile(localFile):
 			# 		pass

@@ -10,11 +10,11 @@ from javax.swing import JButton, JFrame, JPanel, JComboBox, JCheckBox, ButtonGro
 from script.imglib import ImgLib
 from java.awt import event, Font
 from ch.psi.imagej.hdf5 import HDF5Reader, HDF5Utilities
-#from hdf.object.h5 import H5File
+from hdf.object.h5 import H5File
 
 global selectedDatasetField, flatFieldBox, world
 
-sys.path.append('C:/Users/benny/recomanager/recomanager')
+sys.path.append('C:/Users/benny/recomanager-ben/recomanager')
 #sys.path.append('/local/fast/conda/recomanager/recomanager')
 
 import RecoPanel
@@ -798,6 +798,23 @@ def reconstruct(event):
         #imageResult = IJ.openImage(recon_filename)
         #imageResult.show()
 
+    elif event.getSource() == tryButton:
+
+        print("Try Reconstruction")
+        recoParameters.sliceNumber=fields.sliceField.getText()
+        recoParameters.centerNumber=fields.centerField.getText()
+        #print(recoParameters.sliceNumber)
+        #print(recoParameters.centerNumber)
+        command = "tomopy recon --file-name " + logfileParameters.filepath + logfileParameters.dataset + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual "
+        print(command)
+        os.system(command)
+        tempfilepath = os.path.normpath(logfileParameters.filepath) + "_rec"
+        tempdataset = "recon_" + recoParameters.centerNumber + ".00.tiff"
+
+        recon_filename = os.path.join(tempfilepath, "try_center", tempdataset)
+        imageResult = IJ.openImage(recon_filename)
+        imageResult.show()
+
 class sliceSelection(MouseAdapter):
     def mousePressed(self,event):
         global numberOfDigits
@@ -1130,6 +1147,11 @@ fields.recoSettingsPanel.add(fields.sliceField)
 oneSliceButton = GUI.createButton("Preview one slice",10,250,200,40,12,True)
 oneSliceButton.actionPerformed=reconstruct
 fields.recoSettingsPanel.add(oneSliceButton)
+
+# Try Reconstruction
+tryButton = GUI.createButton("Try Reconstruction",295,250,200,40,12,True)
+tryButton.actionPerformed=reconstruct
+fields.recoSettingsPanel.add(tryButton)
 
 # Submit to the cluster
 submitButton = GUI.createButton("Submit full stack",580,250,200,40,12,True)
