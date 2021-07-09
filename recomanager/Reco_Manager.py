@@ -811,7 +811,7 @@ def reconstruct(event):
         tempfilepath = os.path.normpath(logfileParameters.filepath) + "_rec"
         tempdataset = "recon_" + recoParameters.centerNumber + ".00.tiff"
 
-        recon_filename = os.path.join(tempfilepath, "try_center", tempdataset)
+        recon_filename = os.path.join(tempfilepath, "try_center", logfileParameters.dataset.rstrip(".h5"), tempdataset)
         imageResult = IJ.openImage(recon_filename)
         imageResult.show()
 
