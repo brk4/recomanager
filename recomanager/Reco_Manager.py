@@ -10,12 +10,12 @@ from javax.swing import JButton, JFrame, JPanel, JComboBox, JCheckBox, ButtonGro
 from script.imglib import ImgLib
 from java.awt import event, Font
 from ch.psi.imagej.hdf5 import HDF5Reader, HDF5Utilities
-from hdf.object.h5 import H5File
+#from hdf.object.h5 import H5File
 
 global selectedDatasetField, flatFieldBox, world
 
-sys.path.append('C:/Users/benny/recomanager-ben/recomanager')
-#sys.path.append('/local/fast/conda/recomanager/recomanager')
+#sys.path.append('C:/Users/benny/recomanager-ben/recomanager')
+sys.path.append('/local/fast/conda/recomanager/recomanager')
 
 import RecoPanel
 import RecoParameters
@@ -234,7 +234,7 @@ def datasetSelector(event):
                         
                     fields.centerField.setText(logfileParameters.center)
 
-                    if os.path.isfile(logfileParameters.datasetOut+"/GUIParameters.txt") or os.path.isfile(logfileParameters.dataset+"/GUIParameters.txt"):
+                    if os.path.isfile(os.path.join(logfileParameters.datasetOut, "GUIParameters.txt")) or os.path.isfile(os.path.join(logfileParameters.dataset, "GUIParameters.txt")):
                         recoParameters.readParametersFromFile("local",logfileParameters.dataset,logfileParameters.datasetOut)
                         recoParameters.writeParametersToGUI()
             
@@ -551,6 +551,7 @@ def reconstruct(event):
             #print(recoParameters.centerNumber)
             command = "tomopy recon --file-name " + logfileParameters.filepath + logfileParameters.dataset + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type slice"
             print(command)
+            recoParameters.writeParametersToFile("GUIParameters.txt")
             os.system(command)
             tempfilepath = os.path.normpath(logfileParameters.filepath) + "_rec"
             tempdataset = "recon_" + logfileParameters.dataset.rstrip(".h5") + ".tiff"

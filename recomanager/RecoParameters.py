@@ -124,7 +124,9 @@ class RecoParameters:
 #	   			elif linelist[0]=="Nnodes":
 #					self.nnodes=int(linelist[1])
 	   			elif linelist[0]=="Center":
-					self.guiCenter=linelist[1]
+					self.centerNumber=linelist[1]
+				elif linelist[0]=="Slice":
+					self.sliceNumber=linelist[1]
 	   			elif linelist[0]=="Postfix":
 	   				if linelist[1]=="0":
 	   					self.postfix=""
@@ -417,22 +419,25 @@ class RecoParameters:
 
 	def writeParametersToFile(self, whichfile,dataset="", datasetOut=""):
 
-		if whichfile == "scratch":
-			if self.world=="offline":
-				userId=os.getlogin()
-				localFile = "/tmp/GUIParameters"+str(userId)+".txt"
-			elif self.world=="online":
-				userId=os.getlogin()
-				localFile = "/scratch/GUIParameters"+str(userId)+".txt"
-			else:
-				print "Unknown environment!"    				
-		else:
-			localFile = datasetOut + "/GUIParameters.txt"
-			if self.world=="offline":
-				if os.path.isfile(localFile):
-					pass
-				else:
-					localFile = dataset + "/GUIParameters.txt"	
+		# if whichfile == "scratch":
+		# 	if self.world=="offline":
+		# 		userId=os.getlogin()
+		# 		localFile = "/tmp/GUIParameters"+str(userId)+".txt"
+		# 	elif self.world=="online":
+		# 		userId=os.getlogin()
+		# 		localFile = "/scratch/GUIParameters"+str(userId)+".txt"
+		# 	else:
+		# 		print "Unknown environment!"    				
+		# else:
+		# 	localFile = datasetOut + "/GUIParameters.txt"
+		# 	if self.world=="offline":
+		# 		if os.path.isfile(localFile):
+		# 			pass
+		# 		else:
+		# 			localFile = dataset + "/GUIParameters.txt"	
+		home = expanduser("~")
+
+		localFile = os.path.join(home, "GUIParameters.txt")
 
 		print localFile
 		print "Write to local file"
@@ -440,58 +445,60 @@ class RecoParameters:
 		try:
 			FILE = open(localFile,"w+")
 			FILE.write("Algorithm                  " + str(self.algorithm) +"\n")
-			FILE.write("Branch                     " + str(self.branch) +"\n")
-			FILE.write("Queue                      " + str(self.queue) +"\n")
-			FILE.write("Nnodes                     " + str(self.nnodes) +"\n")
-			FILE.write("Postfix                    " + self.postfix + "\n")
-			if whichfile != "scratch":
-				FILE.write("Center                     " + self.guiCenter + "\n")
-			FILE.write("Filter                     " + str(self.filterIndex) + "\n")
-			FILE.write("Cutoff frequency           " + self.cutOffFrequency + "\n")
+			# FILE.write("Branch                     " + str(self.branch) +"\n")
+			# FILE.write("Queue                      " + str(self.queue) +"\n")
+			# FILE.write("Nnodes                     " + str(self.nnodes) +"\n")
+			# FILE.write("Postfix                    " + self.postfix + "\n")
+			# if whichfile != "scratch":
+			# 	FILE.write("Center                     " + self.guiCenter + "\n")
+			# FILE.write("Filter                     " + str(self.filterIndex) + "\n")
+			# FILE.write("Cutoff frequency           " + self.cutOffFrequency + "\n")
 			FILE.write("Rotation                   " + self.rotation + "\n")
-			FILE.write("Padding                    " + self.zeroPadding + "\n")
-			FILE.write("Geometry                   " + str(self.geometryIndex) + "\n")
-			FILE.write("Ring option                " + self.ringOption + "\n")	
-			if self.ringOption=="2":
-				FILE.write("windowSize                 " + self.windowSize + "\n")
-			elif self.ringOption=="3":
-				FILE.write("Wavelet type               " + str(self.waveletTypeIndex) + "\n")
-				FILE.write("Wavelet min comp           " + self.waveletMinComponent + "\n")
-				FILE.write("Wavelet max comp           " + self.waveletMaxComponent + "\n")
-				FILE.write("Wavelet filter width       " + self.waveletFilterWidth + "\n")
-				FILE.write("Wavelet padding            " + str(self.waveletPaddingIndex) + "\n")
-			elif self.ringOption=="4":
-				FILE.write("windowSizeL                " + self.windowSizeL + "\n")
-				FILE.write("windowSizeSM               " + self.windowSizeSM + "\n")
-				FILE.write("SNR                        " + self.snr + "\n")
-			FILE.write("Zinger option              " + self.zingerOption + "\n")
-			if self.zingerOption!="False":
-				FILE.write("Threshold                  " + self.threshold + "\n")
-				FILE.write("Kernel Width               " + self.kernelWidth + "\n")
-			FILE.write("Output format              " + self.outputFormat + "\n")
-			if self.outputFormat!="0":
-				FILE.write("Minimum                    " + self.minimum + "\n")
-				FILE.write("Maximum                    " + self.maximum + "\n")
-			FILE.write("X1                         " + self.roiX1 + "\n")
-			FILE.write("X2                         " + self.roiX2 + "\n")
-			FILE.write("Y1                         " + self.roiY1 + "\n")
-			FILE.write("Y2                         " + self.roiY2 + "\n")
-			FILE.write("Shifting                   " + str(self.shiftingIndex) + "\n")
-			if self.threeSixtyVariable==1:
-				FILE.write("Axis position              " + str(self.axisBoxIndex) + "\n")		
-				FILE.write("Real overlap               " + str(self.realOverlap) + "\n")
-				FILE.write("Approach                   " + str(self.approachBoxIndex) + "\n")		
-			if self.delta != "":
-				FILE.write("Delta                      " + self.delta + "\n")
-			if self.beta != "":
-				FILE.write("Beta                       " + self.beta + "\n")
-			if self.distance != "":
-				FILE.write("Distance                   " + self.distance + "\n")
-				FILE.write("FFT Paganin padding        " + str(self.paganinPaddingIndex) + "\n")
-			if self.stabilizer != "":
-				FILE.write("Stabilizer                 " + self.stabilizer + "\n")
-			if self.width != "":
-				FILE.write("Gaussian kernel width      " + self.width + "\n")
+			FILE.write("Center                     " + self.centerNumber + "\n")
+			FILE.write("Slice                      " + self.sliceNumber + "\n")
+			# FILE.write("Padding                    " + self.zeroPadding + "\n")
+			# FILE.write("Geometry                   " + str(self.geometryIndex) + "\n")
+			# FILE.write("Ring option                " + self.ringOption + "\n")	
+			# if self.ringOption=="2":
+			# 	FILE.write("windowSize                 " + self.windowSize + "\n")
+			# elif self.ringOption=="3":
+			# 	FILE.write("Wavelet type               " + str(self.waveletTypeIndex) + "\n")
+			# 	FILE.write("Wavelet min comp           " + self.waveletMinComponent + "\n")
+			# 	FILE.write("Wavelet max comp           " + self.waveletMaxComponent + "\n")
+			# 	FILE.write("Wavelet filter width       " + self.waveletFilterWidth + "\n")
+			# 	FILE.write("Wavelet padding            " + str(self.waveletPaddingIndex) + "\n")
+			# elif self.ringOption=="4":
+			# 	FILE.write("windowSizeL                " + self.windowSizeL + "\n")
+			# 	FILE.write("windowSizeSM               " + self.windowSizeSM + "\n")
+			# 	FILE.write("SNR                        " + self.snr + "\n")
+			# FILE.write("Zinger option              " + self.zingerOption + "\n")
+			# if self.zingerOption!="False":
+			# 	FILE.write("Threshold                  " + self.threshold + "\n")
+			# 	FILE.write("Kernel Width               " + self.kernelWidth + "\n")
+			# FILE.write("Output format              " + self.outputFormat + "\n")
+			# if self.outputFormat!="0":
+			# 	FILE.write("Minimum                    " + self.minimum + "\n")
+			# 	FILE.write("Maximum                    " + self.maximum + "\n")
+			# FILE.write("X1                         " + self.roiX1 + "\n")
+			# FILE.write("X2                         " + self.roiX2 + "\n")
+			# FILE.write("Y1                         " + self.roiY1 + "\n")
+			# FILE.write("Y2                         " + self.roiY2 + "\n")
+			# FILE.write("Shifting                   " + str(self.shiftingIndex) + "\n")
+			# if self.threeSixtyVariable==1:
+			# 	FILE.write("Axis position              " + str(self.axisBoxIndex) + "\n")		
+			# 	FILE.write("Real overlap               " + str(self.realOverlap) + "\n")
+			# 	FILE.write("Approach                   " + str(self.approachBoxIndex) + "\n")		
+			# if self.delta != "":
+			# 	FILE.write("Delta                      " + self.delta + "\n")
+			# if self.beta != "":
+			# 	FILE.write("Beta                       " + self.beta + "\n")
+			# if self.distance != "":
+			# 	FILE.write("Distance                   " + self.distance + "\n")
+			# 	FILE.write("FFT Paganin padding        " + str(self.paganinPaddingIndex) + "\n")
+			# if self.stabilizer != "":
+			# 	FILE.write("Stabilizer                 " + self.stabilizer + "\n")
+			# if self.width != "":
+			# 	FILE.write("Gaussian kernel width      " + self.width + "\n")
 			FILE.write("\n")
  			FILE.close()
 		except IOError:
@@ -509,7 +516,7 @@ class RecoParameters:
 #	   		self.fields.develButton.setSelected(True)
 
  		self.fields.postfixField.setText(self.postfix)
-		self.fields.centerField.setText(self.guiCenter)
+		self.fields.centerField.setText(self.centerNumber)
 		self.fields.rotField.setText(self.rotation)
 
 	   	self.fields.filterChooser.setSelectedIndex(self.filterIndex)
