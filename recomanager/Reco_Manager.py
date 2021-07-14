@@ -1,4 +1,5 @@
 import os, glob, time, socket, sys, math
+from os.path import expanduser
 from ij.gui import Line
 from ij import IJ
 from ij import ImagePlus
@@ -48,6 +49,7 @@ def datasetSelector(event):
     datasetFileName=datasetChooser.getFileName()
     datasetGetDirectory=datasetChooser.getDirectory()
     dataLocation = str(datasetGetDirectory) + str(datasetFileName)
+    fields.selectedDatasetField.setText(dataLocation)
 
     from ch.psi.imagej.hdf5 import HDF5Reader
     reader = HDF5Reader()
@@ -151,7 +153,7 @@ def datasetSelector(event):
                                 command="cp "+logfileParameters.dataset + "/" + logfileParameters.samplename + ".log " + logfileParameters.datasetOut
                                 os.system(command)
                             
-                fields.selectedDatasetField.setText("/"+logfileParameters.diskName+"/"+logfileParameters.samplename)
+                fields.selectedDatasetField.setText("/"+logfileParameters.dataset+"/"+logfileParameters.dataset)
                 
                 if logfileParameters.datasetType=="tiff":
                     os.chdir("tiff")
@@ -1254,3 +1256,8 @@ fields.approachBox.actionListener=approachSelectionHandler
 cleanButtonHandler = SimpleFunctions.CleanButton(logfileParameters)
 fields.cleanButton.actionListener=cleanButtonHandler
 
+home = expanduser("~")
+if os.path.exists(os.path.join(home, "GUIParameters.txt")) == True:
+    SimpleFunctions.GetLastParameters(recoParameters)
+elif os.path.exists(os.path.join(home, "GUIParameters.txt")) == False:
+    print("fail")
