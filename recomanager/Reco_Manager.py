@@ -556,8 +556,10 @@ def reconstruct(event):
             tempfilepath = os.path.normpath(logfileParameters.filepath) + "_rec"
             tempdataset = "recon_" + logfileParameters.dataset.rstrip(".h5") + ".tiff"
 
+            list_of_files = glob.glob(os.path.join(tempfilepath, "slice_rec", "*"))
+            latest_file = max(list_of_files, key=os.path.getctime)
             recon_filename = os.path.join(tempfilepath, "slice_rec", tempdataset)
-            imageResult = IJ.openImage(recon_filename)
+            imageResult = IJ.openImage(latest_file)
             imageResult.show()
 
         closestSinogram = getClosestSinogram(recoParameters.sliceNumber)
@@ -1251,3 +1253,4 @@ fields.approachBox.actionListener=approachSelectionHandler
 
 cleanButtonHandler = SimpleFunctions.CleanButton(logfileParameters)
 fields.cleanButton.actionListener=cleanButtonHandler
+
