@@ -38,7 +38,7 @@ def datasetSelector(event):
 
     datasetAlreadySelected = fields.selectedDatasetField.getText()
     if datasetAlreadySelected!="" and datasetFileName is not None:
-        if logfileParameters.datasetValid == True:
+        if logfileParameters.data00setValid == True:
             recoParameters.readParametersFromGUI(logfileParameters.originalRoiX)
             recoParameters.writeParametersToFile("local",logfileParameters.dataset,logfileParameters.datasetOut)
             recoParameters.writeParametersToFile("local",logfielParameters.filename)
@@ -1258,6 +1258,30 @@ fields.cleanButton.actionListener=cleanButtonHandler
 
 home = expanduser("~")
 if os.path.exists(os.path.join(home, "GUIParameters.txt")) == True:
-    SimpleFunctions.GetLastParameters(recoParameters)
+    print("GUIParameters.txt")
 elif os.path.exists(os.path.join(home, "GUIParameters.txt")) == False:
-    print("fail")
+    home = expanduser("~")
+
+    localFile = os.path.join(home, "GUIParameters.txt")
+
+    print localFile
+    print "Write to local file"
+        
+    try:
+        FILE = open(localFile,"w+")
+        FILE.write("Algorithm                  " + "0" +"\n")
+        FILE.write("Rotation                   " + "0" + "\n")
+        FILE.write("Center                     " + "1224" + "\n")
+        FILE.write("Slice                      " + "750" + "\n")
+        FILE.write("\n")
+        FILE.close()
+
+    except IOError:
+        pass
+
+else:
+    pass
+
+
+recoParameters.readParametersFromFile("scratch")
+recoParameters.writeParametersToGUI()
