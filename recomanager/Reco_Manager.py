@@ -36,20 +36,21 @@ def datasetSelector(event):
     global img, projectionSelection, datasetAlreadySelected, flatFieldBox, basedir, datasetFileName
     global projectionNumberOfDigits
 
-    datasetAlreadySelected = fields.selectedDatasetField.getText()
-    if datasetAlreadySelected!="" and datasetFileName is not None:
-        if logfileParameters.data00setValid == True:
-            recoParameters.readParametersFromGUI(logfileParameters.originalRoiX)
-            recoParameters.writeParametersToFile("local",logfileParameters.dataset,logfileParameters.datasetOut)
-            recoParameters.writeParametersToFile("local",logfielParameters.filename)
-            recoParameters.writeParametersToFile("scratch")
-        else:
-            datasetAlreadySelected=""
+    # datasetAlreadySelected = fields.selectedDatasetField.getText()
+    # if datasetAlreadySelected!="" and datasetFileName is not None:
+    #     if logfileParameters.data00setValid == True:
+    #         recoParameters.readParametersFromGUI(logfileParameters.originalRoiX)
+    #         recoParameters.writeParametersToFile("local",logfileParameters.dataset,logfileParameters.datasetOut)
+    #         recoParameters.writeParametersToFile("local",logfielParameters.filename)
+    #         recoParameters.writeParametersToFile("scratch")
+    #     else:
+    #         datasetAlreadySelected=""
     datasetChooser = OpenDialog("Select a dataset")
     datasetFileName=datasetChooser.getFileName()
     datasetGetDirectory=datasetChooser.getDirectory()
     dataLocation = str(datasetGetDirectory) + str(datasetFileName)
     fields.selectedDatasetField.setText(dataLocation)
+    recoParameters.FileLocation = dataLocation
 
     from ch.psi.imagej.hdf5 import HDF5Reader
     reader = HDF5Reader()
@@ -551,7 +552,8 @@ def reconstruct(event):
             recoParameters.centerNumber=fields.centerField.getText()
             #print(recoParameters.sliceNumber)
             #print(recoParameters.centerNumber)
-            command = "tomopy recon --file-name " + logfileParameters.filepath + logfileParameters.dataset + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type slice"
+            slicenum = float(recoParameters.sliceNumber)/float(920)
+            command = "tomopy recon --file-name " + logfileParameters.filepath + logfileParameters.dataset + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type slice " + "--nsino " + str(slicenum)
             print(command)
             recoParameters.writeParametersToFile("GUIParameters.txt")
             os.system(command)
@@ -1272,7 +1274,7 @@ elif os.path.exists(os.path.join(home, "GUIParameters.txt")) == False:
         FILE.write("Algorithm                  " + "0" +"\n")
         FILE.write("Rotation                   " + "0" + "\n")
         FILE.write("Center                     " + "1224" + "\n")
-        FILE.write("Slice                      " + "750" + "\n")
+        FILE.write("Slice                      " + "460" + "\n")
         FILE.write("\n")
         FILE.close()
 

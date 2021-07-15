@@ -19,6 +19,7 @@ class RecoParameters:
 #		self.usedBranch = "Beamline"
 #		self.queue = "tomcat_NB.q"
 #		self.nnodes = 4
+		self.FileLocation = ""
 		
 		self.sliceNumber = "1"
 		self.guiCenter = "0"
@@ -123,6 +124,8 @@ class RecoParameters:
 #					self.queue=linelist[1]
 #	   			elif linelist[0]=="Nnodes":
 #					self.nnodes=int(linelist[1])
+				elif linelist[0]=="FileName":
+					self.FileLocation=linelist[1]
 	   			elif linelist[0]=="Center":
 					self.centerNumber=linelist[1]
 				elif linelist[0]=="Slice":
@@ -456,6 +459,7 @@ class RecoParameters:
 			FILE.write("Rotation                   " + self.rotation + "\n")
 			FILE.write("Center                     " + self.centerNumber + "\n")
 			FILE.write("Slice                      " + self.sliceNumber + "\n")
+			FILE.write("FileName                   " + self.FileLocation + '\n')
 			# FILE.write("Padding                    " + self.zeroPadding + "\n")
 			# FILE.write("Geometry                   " + str(self.geometryIndex) + "\n")
 			# FILE.write("Ring option                " + self.ringOption + "\n")	
@@ -509,6 +513,7 @@ class RecoParameters:
 
    		self.fields.algoChooser.setSelectedIndex(int(self.algorithm))
 		self.fields.sliceField.setText(str(self.sliceNumber))
+		self.fields.selectedDatasetField.setText(str(self.FileLocation))
 		
 #	   	if self.branch=="master":
 #	  		self.fields.masterButton.setSelected(True)
