@@ -550,10 +550,11 @@ def reconstruct(event):
 
             recoParameters.sliceNumber=fields.sliceField.getText()
             recoParameters.centerNumber=fields.centerField.getText()
+            recoParameters.nsinoperchunk=fields.nsinochunkField.getText()
             #print(recoParameters.sliceNumber)
             #print(recoParameters.centerNumber)
             slicenum = float(recoParameters.sliceNumber)/float(920)
-            command = "tomopy recon --file-name " + logfileParameters.filepath + logfileParameters.dataset + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type slice " + "--nsino " + str(slicenum)
+            command = "tomopy recon --file-name " + logfileParameters.filepath + logfileParameters.dataset + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type slice " + "--nsino " + str(slicenum) + " --nsino-per-chunk " + recoParameters.nsinoperchunk
             print(command)
             recoParameters.writeParametersToFile("GUIParameters.txt")
             os.system(command)
@@ -1059,6 +1060,10 @@ fields.recoSettingsPanel.add(fields.getRotationCenterButton)
 fields.recoSettingsPanel.add(fields.sliceLabel)
 fields.recoSettingsPanel.add(fields.sliceField)
 
+#nsinoPerChunk
+fields.recoSettingsPanel.add(fields.nsinochunkLabel)
+fields.recoSettingsPanel.add(fields.nsinochunkField)
+
 # Rotation
 #fields.recoSettingsPanel.add(fields.rotLabel)
 #fields.recoSettingsPanel.add(fields.rotField)
@@ -1275,6 +1280,7 @@ elif os.path.exists(os.path.join(home, "GUIParameters.txt")) == False:
         FILE.write("Rotation                   " + "0" + "\n")
         FILE.write("Center                     " + "1224" + "\n")
         FILE.write("Slice                      " + "460" + "\n")
+        FILE.write("nsino-per-chunk            " + "256" + "\n")
         FILE.write("\n")
         FILE.close()
 

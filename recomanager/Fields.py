@@ -49,6 +49,10 @@ class Fields():
 		# Slice number
 		self.sliceLabel = GUI.createLabel("Slice Number",10,95,200,30,2,12,True)
 		self.sliceField = GUI.createTextField(8,200,95,100,25,True,"1")
+
+		#nsinoPerChunk
+		self.nsinochunkLabel = GUI.createLabel("nsino-per-chunk",10,125,200,30,2,12,True)
+		self.nsinochunkField = GUI.createTextField(8,200,125,100,25,True,"1")
 		
 		# Rotation
 		self.rotLabel = GUI.createLabel("Rotation",10,125,200,30,2,12,True)

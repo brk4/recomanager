@@ -20,6 +20,7 @@ class RecoParameters:
 #		self.queue = "tomcat_NB.q"
 #		self.nnodes = 4
 		self.FileLocation = ""
+		self.nsinoperchunk = "256"
 		
 		self.sliceNumber = "1"
 		self.guiCenter = "0"
@@ -126,6 +127,8 @@ class RecoParameters:
 #					self.nnodes=int(linelist[1])
 				elif linelist[0]=="FileName":
 					self.FileLocation=linelist[1]
+				elif linelist[0]=="nsinoperchunk":
+					self.nsinoperchunk=linelist[1]
 	   			elif linelist[0]=="Center":
 					self.centerNumber=linelist[1]
 				elif linelist[0]=="Slice":
@@ -227,6 +230,7 @@ class RecoParameters:
 	
 		self.sliceNumber = self.fields.sliceField.getText()
 		self.algorithm = self.fields.algoChooser.getSelectedIndex()
+		self.nsinoperchunk = self.fields.nsinochunkField.getText()
 		if self.fields.masterButton.isSelected():
 			self.branch="master"
 			self.usedBranch="Apy3_m"
@@ -460,6 +464,7 @@ class RecoParameters:
 			FILE.write("Center                     " + self.centerNumber + "\n")
 			FILE.write("Slice                      " + self.sliceNumber + "\n")
 			FILE.write("FileName                   " + self.FileLocation + '\n')
+			FILE.write("nsino-per-chunk            " + self.nsinoperchunk + "\n")
 			# FILE.write("Padding                    " + self.zeroPadding + "\n")
 			# FILE.write("Geometry                   " + str(self.geometryIndex) + "\n")
 			# FILE.write("Ring option                " + self.ringOption + "\n")	
@@ -523,6 +528,7 @@ class RecoParameters:
  		self.fields.postfixField.setText(self.postfix)
 		self.fields.centerField.setText(self.centerNumber)
 		self.fields.rotField.setText(self.rotation)
+		self.fields.nsinochunkField.setText(self.nsinoperchunk)
 
 	   	self.fields.filterChooser.setSelectedIndex(self.filterIndex)
 		self.fields.cutOffField.setText(self.cutOffFrequency)
