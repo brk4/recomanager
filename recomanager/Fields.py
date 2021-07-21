@@ -3,7 +3,7 @@ class Fields():
 	def __init__(self,GUI):
 		
 		# Create a panel for the Reconstruction settings
-		self.recoSettingsPanel = GUI.createPanel(5,250,790,540)
+		self.recoSettingsPanel = GUI.createPanel(5,175,790,540)
 	
 		# Create Reconstruction settings widgets
 		self.recoSettingsLabel = GUI.createLabel("Reconstruction Settings",10,5,300,30,2,14,True)
@@ -19,6 +19,11 @@ class Fields():
 		self.algoLabel = GUI.createLabel("Algorithm",10,35,200,30,2,12,True)
 		self.algoList=["Gridrec","Paganin"]
 		self.algoChooser = GUI.createComboBox(self.algoList,200,35,100,25,0,10,True)
+
+		# Gridrec Padding
+		self.gridrecLabel = GUI.createLabel("Gridrec Padding",10,35,200,550,2,12,True)
+		self.gridrecList=["True","False"]
+		self.gridrecChooser = GUI.createComboBox(self.gridrecList,200,300,100,25,0,10,True)
 		
 		self.getLastParametersButton = GUI.createButton("Get last parameters",250,10,150,20,8,True)
 		
@@ -51,8 +56,8 @@ class Fields():
 		self.sliceField = GUI.createTextField(8,200,95,100,25,True,"1")
 
 		#nsinoPerChunk
-		self.nsinochunkLabel = GUI.createLabel("nsino-per-chunk",10,125,200,30,2,12,True)
-		self.nsinochunkField = GUI.createTextField(8,200,125,100,25,True,"1")
+		self.nsinochunkLabel = GUI.createLabel("nsino-per-chunk",10,200,200,30,2,12,True)
+		self.nsinochunkField = GUI.createTextField(8,200,200,100,25,True,"1")
 		
 		# Rotation
 		self.rotLabel = GUI.createLabel("Rotation",10,125,200,30,2,12,True)
@@ -141,7 +146,7 @@ class Fields():
 		self.postfixField = GUI.createTextField(8,200,425,300,25,True,"")
 
 		# Create a panel for the choosing a dataset
-		self.chooseDatasetPanel = GUI.createPanel(5,5,790,240)
+		self.chooseDatasetPanel = GUI.createPanel(5,5,790,160)
 
 		# Dataset panel
 		self.datasetSelectionLabel = GUI.createLabel("Dataset",10,5,200,30,2,14,True)

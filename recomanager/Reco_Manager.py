@@ -11,12 +11,12 @@ from javax.swing import JButton, JFrame, JPanel, JComboBox, JCheckBox, ButtonGro
 from script.imglib import ImgLib
 from java.awt import event, Font
 from ch.psi.imagej.hdf5 import HDF5Reader, HDF5Utilities
-#from hdf.object.h5 import H5File
+from hdf.object.h5 import H5File
 
 global selectedDatasetField, flatFieldBox, world
 
-#sys.path.append('C:/Users/benny/recomanager-ben/recomanager')
-sys.path.append('/local/fast/conda/recomanager/recomanager')
+sys.path.append('C:/Users/benny/recomanager-ben/recomanager')
+#sys.path.append('/local/fast/conda/recomanager/recomanager')
 
 import RecoPanel
 import RecoParameters
@@ -554,7 +554,8 @@ def reconstruct(event):
             #print(recoParameters.sliceNumber)
             #print(recoParameters.centerNumber)
             slicenum = float(recoParameters.sliceNumber)/float(920)
-            command = "tomopy recon --file-name " + logfileParameters.filepath + logfileParameters.dataset + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type slice " + "--nsino " + str(slicenum) + " --nsino-per-chunk " + recoParameters.nsinoperchunk
+            reconfilelocation = fields.selectedDatasetField.getText()
+            command = "tomopy recon --file-name " + reconfilelocation + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type slice " + "--nsino " + str(slicenum) + " --nsino-per-chunk " + recoParameters.nsinoperchunk
             print(command)
             recoParameters.writeParametersToFile("GUIParameters.txt")
             os.system(command)
@@ -1019,6 +1020,10 @@ fields.recoSettingsPanel.add(fields.recoSettingsLabel)
 fields.recoSettingsPanel.add(fields.algoLabel)
 fields.recoSettingsPanel.add(fields.algoChooser)
 
+# Gridrec Padding
+fields.recoSettingsPanel.add(fields.gridrecLabel)
+fields.recoSettingsPanel.add(fields.gridrecChooser)
+
 #fields.getLastParametersButton.actionPerformed = getLastParameters
 fields.recoSettingsPanel.add(fields.getLastParametersButton)
 
@@ -1156,17 +1161,17 @@ fields.recoSettingsPanel.add(fields.nsinochunkField)
 #fields.recoSettingsPanel.add(fields.postfixField)
 
 # One slice reconstruction
-oneSliceButton = GUI.createButton("Preview one slice",10,250,200,40,12,True)
+oneSliceButton = GUI.createButton("Preview one slice",10,135,200,40,12,True)
 oneSliceButton.actionPerformed=reconstruct
 fields.recoSettingsPanel.add(oneSliceButton)
 
 # Try Reconstruction
-tryButton = GUI.createButton("Try Reconstruction",295,250,200,40,12,True)
+tryButton = GUI.createButton("Try Reconstruction",10,250,200,40,12,True)
 tryButton.actionPerformed=reconstruct
 fields.recoSettingsPanel.add(tryButton)
 
 # Submit to the cluster
-submitButton = GUI.createButton("Submit full stack",580,250,200,40,12,True)
+submitButton = GUI.createButton("Submit full stack",10,350,200,40,12,True)
 submitButton.actionPerformed=reconstruct
 fields.recoSettingsPanel.add(submitButton)
 
