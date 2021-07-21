@@ -555,11 +555,12 @@ def reconstruct(event):
             #print(recoParameters.centerNumber)
             slicenum = float(recoParameters.sliceNumber)/float(920)
             reconfilelocation = fields.selectedDatasetField.getText()
+            head_tail = os.path.split(reconfilelocation)
             command = "tomopy recon --file-name " + reconfilelocation + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type slice " + "--nsino " + str(slicenum) + " --nsino-per-chunk " + recoParameters.nsinoperchunk
             print(command)
             recoParameters.writeParametersToFile("GUIParameters.txt")
             os.system(command)
-            tempfilepath = os.path.normpath(logfileParameters.filepath) + "_rec"
+            tempfilepath = os.path.normpath(head_tail[0]) + "_rec"
             tempdataset = "recon_" + logfileParameters.dataset.rstrip(".h5") + ".tiff"
 
             list_of_files = glob.glob(os.path.join(tempfilepath, "slice_rec", "*"))
@@ -568,20 +569,20 @@ def reconstruct(event):
             imageResult = IJ.openImage(latest_file)
             imageResult.show()
 
-        closestSinogram = getClosestSinogram(recoParameters.sliceNumber)
-        recoParameters.sliceNumber=closestSinogram
+        # closestSinogram = getClosestSinogram(recoParameters.sliceNumber)
+        # recoParameters.sliceNumber=closestSinogram
 
-        if closestSinogram!="0":
+        # if closestSinogram!="0":
                 
-            fields.sliceField.setText(str(recoParameters.sliceNumber))
-            #reconstructSinogram()
+        #     fields.sliceField.setText(str(recoParameters.sliceNumber))
+        #     #reconstructSinogram()
 
-            reconstructedSliceFile = logfileParameters.datasetOut + "/viewrec/" + samplenameForReconstruction + closestSinogram.zfill(numberOfDigits) + ".rec.DMP"
+        #     reconstructedSliceFile = logfileParameters.datasetOut + "/viewrec/" + samplenameForReconstruction + closestSinogram.zfill(numberOfDigits) + ".rec.DMP"
 
-            if recoParameters.algorithm!=99:
-                showReconstructedSlice(reconstructedSliceFile)
-            # TODO - I am not sure this is necessary, I need for sure the same command in sinogramCalculation (pag)    
-            os.chdir(logfileParameters.datasetOut)
+        #     if recoParameters.algorithm!=99:
+        #         showReconstructedSlice(reconstructedSliceFile)
+        #     # TODO - I am not sure this is necessary, I need for sure the same command in sinogramCalculation (pag)    
+        #     os.chdir(logfileParameters.datasetOut)
 
     elif event.getSource() == submitButton:
 
