@@ -11,12 +11,12 @@ from javax.swing import JButton, JFrame, JPanel, JComboBox, JCheckBox, ButtonGro
 from script.imglib import ImgLib
 from java.awt import event, Font
 from ch.psi.imagej.hdf5 import HDF5Reader, HDF5Utilities
-#from hdf.object.h5 import H5File
+from hdf.object.h5 import H5File
 
 global selectedDatasetField, flatFieldBox, world
 
-#sys.path.append('C:/Users/benny/recomanager-ben/recomanager')
-sys.path.append('/local/fast/conda/recomanager/recomanager')
+sys.path.append('C:/Users/benny/recomanager-ben/recomanager')
+#sys.path.append('/local/fast/conda/recomanager/recomanager')
 
 import RecoPanel
 import RecoParameters
@@ -551,12 +551,19 @@ def reconstruct(event):
             recoParameters.sliceNumber=fields.sliceField.getText()
             recoParameters.centerNumber=fields.centerField.getText()
             recoParameters.nsinoperchunk=fields.nsinochunkField.getText()
+            recoParameters.centerSearchWidth=fields.searchWidthField.getText()
+            recoParameters.gridrecPadding=fields.gridrecChooser.getSelectedIndex()
+            if recoParameters.gridrecPadding == 0:
+                tempstring = "True"
+            elif recoParameters.gridrecPadding == 1:
+                tempstring = "False"
             #print(recoParameters.sliceNumber)
             #print(recoParameters.centerNumber)
             slicenum = float(recoParameters.sliceNumber)/float(920)
             reconfilelocation = fields.selectedDatasetField.getText()
+            recoParameters.FileLocation = fields.selectedDatasetField.getText()
             head_tail = os.path.split(reconfilelocation)
-            command = "tomopy recon --file-name " + reconfilelocation + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type slice " + "--nsino " + str(slicenum) + " --nsino-per-chunk " + recoParameters.nsinoperchunk
+            command = "tomopy recon --file-name " + reconfilelocation + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type slice " + "--nsino " + str(slicenum) + " --gridrec-padding " + tempstring
             print(command)
             recoParameters.writeParametersToFile("GUIParameters.txt")
             os.system(command)
@@ -796,34 +803,51 @@ def reconstruct(event):
 
         recoParameters.sliceNumber=fields.sliceField.getText()
         recoParameters.centerNumber=fields.centerField.getText()
+        recoParameters.nsinoperchunk=fields.nsinochunkField.getText()
         #print(recoParameters.sliceNumber)
         #print(recoParameters.centerNumber)
-        command = "tomopy recon --file-name " + logfileParameters.filepath + logfileParameters.dataset + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type full"
+        slicenum = float(recoParameters.sliceNumber)/float(920)
+        reconfilelocation = fields.selectedDatasetField.getText()
+        recoParameters.FileLocation = fields.selectedDatasetField.getText()
+        head_tail = os.path.split(reconfilelocation)
+        command = "tomopy recon --file-name " + reconfilelocation + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type full " + "--nsino " + str(slicenum) + " --nsino-per-chunk " + recoParameters.nsinoperchunk
         print(command)
+        recoParameters.writeParametersToFile("GUIParameters.txt")
         os.system(command)
-        tempfilepath = os.path.normpath(logfileParameters.filepath)
-        tempdataset = logfileParameters.dataset.rstrip(".h5")
+        tempfilepath = os.path.normpath(head_tail[0]) + "_rec"
+        tempdataset = "recon_" + logfileParameters.dataset.rstrip(".h5") + ".tiff"
 
-        #recon_filename = tempfilepath + "_rec\\slice_rec\\recon_" + tempdataset + ".tiff"
-        #imageResult = IJ.openImage(recon_filename)
-        #imageResult.show()
+        # list_of_files = glob.glob(os.path.join(tempfilepath, "slice_rec", "*"))
+        # latest_file = max(list_of_files, key=os.path.getctime)
+        # recon_filename = os.path.join(tempfilepath, "slice_rec", tempdataset)
+        # imageResult = IJ.openImage(latest_file)
+        # imageResult.show()
 
     elif event.getSource() == tryButton:
 
         print("Try Reconstruction")
         recoParameters.sliceNumber=fields.sliceField.getText()
         recoParameters.centerNumber=fields.centerField.getText()
+        recoParameters.nsinoperchunk=fields.nsinochunkField.getText()
+        recoParameters.centerSearchWidth=fields.searchWidthField.getText()
         #print(recoParameters.sliceNumber)
         #print(recoParameters.centerNumber)
-        command = "tomopy recon --file-name " + logfileParameters.filepath + logfileParameters.dataset + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual "
+        slicenum = float(recoParameters.sliceNumber)/float(920)
+        reconfilelocation = fields.selectedDatasetField.getText()
+        recoParameters.FileLocation = fields.selectedDatasetField.getText()
+        head_tail = os.path.split(reconfilelocation)
+        command = "tomopy recon --file-name " + reconfilelocation + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type try " + "--nsino " + str(slicenum) + " --center-search-width " + recoParameters.centerSearchWidth
         print(command)
+        recoParameters.writeParametersToFile("GUIParameters.txt")
         os.system(command)
-        tempfilepath = os.path.normpath(logfileParameters.filepath) + "_rec"
-        tempdataset = "recon_" + recoParameters.centerNumber + ".00.tiff"
+        tempfilepath = os.path.normpath(head_tail[0]) + "_rec"
+        tempdataset = "recon_" + logfileParameters.dataset.rstrip(".h5") + ".tiff"
 
-        recon_filename = os.path.join(tempfilepath, "try_center", logfileParameters.dataset.rstrip(".h5"), tempdataset)
-        imageResult = IJ.openImage(recon_filename)
-        imageResult.show()
+        # list_of_files = glob.glob(os.path.join(tempfilepath, "slice_rec", "*"))
+        # latest_file = max(list_of_files, key=os.path.getctime)
+        # recon_filename = os.path.join(tempfilepath, "slice_rec", tempdataset)
+        # imageResult = IJ.openImage(latest_file)
+        # imageResult.show()
 
 class sliceSelection(MouseAdapter):
     def mousePressed(self,event):
@@ -1066,7 +1090,11 @@ fields.recoSettingsPanel.add(fields.getRotationCenterButton)
 fields.recoSettingsPanel.add(fields.sliceLabel)
 fields.recoSettingsPanel.add(fields.sliceField)
 
-#nsinoPerChunk
+# Center Search Width
+fields.recoSettingsPanel.add(fields.searchWidthLabel)
+fields.recoSettingsPanel.add(fields.searchWidthField)
+
+# nsinoPerChunk
 fields.recoSettingsPanel.add(fields.nsinochunkLabel)
 fields.recoSettingsPanel.add(fields.nsinochunkField)
 
@@ -1162,17 +1190,17 @@ fields.recoSettingsPanel.add(fields.nsinochunkField)
 #fields.recoSettingsPanel.add(fields.postfixField)
 
 # One slice reconstruction
-oneSliceButton = GUI.createButton("Preview one slice",10,135,200,40,12,True)
+oneSliceButton = GUI.createButton("Preview one slice",10,165,200,40,12,True)
 oneSliceButton.actionPerformed=reconstruct
 fields.recoSettingsPanel.add(oneSliceButton)
 
 # Try Reconstruction
-tryButton = GUI.createButton("Try Reconstruction",10,250,200,40,12,True)
+tryButton = GUI.createButton("Try Reconstruction",10,275,200,40,12,True)
 tryButton.actionPerformed=reconstruct
 fields.recoSettingsPanel.add(tryButton)
 
 # Submit to the cluster
-submitButton = GUI.createButton("Submit full stack",10,350,200,40,12,True)
+submitButton = GUI.createButton("Submit full stack",10,375,200,40,12,True)
 submitButton.actionPerformed=reconstruct
 fields.recoSettingsPanel.add(submitButton)
 
@@ -1287,6 +1315,7 @@ elif os.path.exists(os.path.join(home, "GUIParameters.txt")) == False:
         FILE.write("Center                     " + "1224" + "\n")
         FILE.write("Slice                      " + "460" + "\n")
         FILE.write("nsino-per-chunk            " + "256" + "\n")
+        FILE.write("centerSearchWidth          " + "10" + "\n")
         FILE.write("\n")
         FILE.close()
 

@@ -21,6 +21,10 @@ class RecoParameters:
 #		self.nnodes = 4
 		self.FileLocation = ""
 		self.nsinoperchunk = "256"
+		self.centerSearchWidth= "10"
+		self.gridrecPadding = 0
+
+
 		
 		self.sliceNumber = "1"
 		self.guiCenter = "0"
@@ -119,6 +123,8 @@ class RecoParameters:
 			if len(linelist)>0:
 	   			if linelist[0]=="Algorithm":
 	   				self.algorithm=linelist[1]
+	   			elif linelist[0]=="Gridrec":
+	   				self.gridrecPadding=linelist[1]
 #	   			elif linelist[0]=="Branch":
 #					self.branch=linelist[1]
 #	   			elif linelist[0]=="Queue":
@@ -127,6 +133,8 @@ class RecoParameters:
 #					self.nnodes=int(linelist[1])
 				elif linelist[0]=="FileName":
 					self.FileLocation=linelist[1]
+				elif linelist[0]=="SearchWidth":
+					self.centerSearchWidth=linelist[1]
 				elif linelist[0]=="nsinoperchunk":
 					self.nsinoperchunk=linelist[1]
 	   			elif linelist[0]=="Center":
@@ -231,6 +239,9 @@ class RecoParameters:
 		self.sliceNumber = self.fields.sliceField.getText()
 		self.algorithm = self.fields.algoChooser.getSelectedIndex()
 		self.nsinoperchunk = self.fields.nsinochunkField.getText()
+		self.FileLocation = self.fields.selectedDatasetField.getText()
+		self.centerSearchWidth = self.fields.searchWidthField.getText()
+		self.gridrecPadding = self.fields.gridrecChooser.getSelectedIndex()
 		if self.fields.masterButton.isSelected():
 			self.branch="master"
 			self.usedBranch="Apy3_m"
@@ -465,6 +476,8 @@ class RecoParameters:
 			FILE.write("Slice                      " + self.sliceNumber + "\n")
 			FILE.write("FileName                   " + self.FileLocation + '\n')
 			FILE.write("nsino-per-chunk            " + self.nsinoperchunk + "\n")
+			FILE.write("SearchWidth                " + self.centerSearchWidth + "\n")
+			FILE.write("Gridrec                    " + str(self.gridrecPadding) + "\n")
 			# FILE.write("Padding                    " + self.zeroPadding + "\n")
 			# FILE.write("Geometry                   " + str(self.geometryIndex) + "\n")
 			# FILE.write("Ring option                " + self.ringOption + "\n")	
@@ -519,6 +532,7 @@ class RecoParameters:
    		self.fields.algoChooser.setSelectedIndex(int(self.algorithm))
 		self.fields.sliceField.setText(str(self.sliceNumber))
 		self.fields.selectedDatasetField.setText(str(self.FileLocation))
+		self.fields.gridrecChooser.setSelectedIndex(int(self.gridrecPadding))
 		
 #	   	if self.branch=="master":
 #	  		self.fields.masterButton.setSelected(True)
@@ -529,6 +543,7 @@ class RecoParameters:
 		self.fields.centerField.setText(self.centerNumber)
 		self.fields.rotField.setText(self.rotation)
 		self.fields.nsinochunkField.setText(self.nsinoperchunk)
+		self.fields.searchWidthField.setText(self.centerSearchWidth)
 
 	   	self.fields.filterChooser.setSelectedIndex(self.filterIndex)
 		self.fields.cutOffField.setText(self.cutOffFrequency)
