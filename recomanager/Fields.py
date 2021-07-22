@@ -24,6 +24,16 @@ class Fields():
 		self.gridrecLabel = GUI.createLabel("Gridrec Padding",10,35,200,210,2,12,True)
 		self.gridrecList=["True","False"]
 		self.gridrecChooser = GUI.createComboBox(self.gridrecList,200,125,100,25,0,10,True)
+
+		# Remove Stripe Method
+		self.stripeMethodLabel = GUI.createLabel("Remove Stripe Method",10,35,200,265,2,12,True)
+		self.stripeMethodList=["none","fw","ti","sf","vo-all"]
+		self.stripeMethodChooser = GUI.createComboBox(self.stripeMethodList,200,155,100,25,0,10,True)
+		
+		# fw-pad
+		self.fwpadLabel = GUI.createLabel("fw-pad",10,35,200,320,2,12,True)
+		self.fwpadList=["True","False"]
+		self.fwpadChooser = GUI.createComboBox(self.fwpadList,200,185,100,25,0,10,True)
 		
 		self.getLastParametersButton = GUI.createButton("Get last parameters",250,10,150,20,8,True)
 		
@@ -56,12 +66,12 @@ class Fields():
 		self.sliceField = GUI.createTextField(8,200,95,100,25,True,"1")
 
 		# Center Search Width
-		self.searchWidthLabel = GUI.createLabel("Center Search Width",10,230,200,30,2,12,True)
-		self.searchWidthField = GUI.createTextField(8,200,230,100,25,True,"1")
+		self.searchWidthLabel = GUI.createLabel("Center Search Width",10,290,200,30,2,12,True)
+		self.searchWidthField = GUI.createTextField(8,200,290,100,25,True,"1")
 
 		# nsinoPerChunk
-		self.nsinochunkLabel = GUI.createLabel("nsino-per-chunk",10,330,200,30,2,12,True)
-		self.nsinochunkField = GUI.createTextField(8,200,330,100,25,True,"1")
+		self.nsinochunkLabel = GUI.createLabel("nsino-per-chunk",10,390,200,30,2,12,True)
+		self.nsinochunkField = GUI.createTextField(8,200,390,100,25,True,"1")
 		
 		# Rotation
 		self.rotLabel = GUI.createLabel("Rotation",10,125,200,30,2,12,True)

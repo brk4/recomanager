@@ -23,6 +23,8 @@ class RecoParameters:
 		self.nsinoperchunk = "256"
 		self.centerSearchWidth= "10"
 		self.gridrecPadding = 0
+		self.stripeMethod = 0
+		self.fwpad = 0
 
 
 		
@@ -125,6 +127,10 @@ class RecoParameters:
 	   				self.algorithm=linelist[1]
 	   			elif linelist[0]=="Gridrec":
 	   				self.gridrecPadding=linelist[1]
+	   			elif linelist[0]=="RemoveStripeMethod":
+	   				self.stripeMethod=linelist[1]
+	   			elif linelist[0]=="fw-pad-setting":
+	   				self.fwpad=linelist[1]
 #	   			elif linelist[0]=="Branch":
 #					self.branch=linelist[1]
 #	   			elif linelist[0]=="Queue":
@@ -242,6 +248,8 @@ class RecoParameters:
 		self.FileLocation = self.fields.selectedDatasetField.getText()
 		self.centerSearchWidth = self.fields.searchWidthField.getText()
 		self.gridrecPadding = self.fields.gridrecChooser.getSelectedIndex()
+		self.stripeMethod = self.fields.stripeMethodChooser.getSelectedIndex()
+		self.fwpad = self.fields.fwpadChooser.getSelectedIndex()
 		if self.fields.masterButton.isSelected():
 			self.branch="master"
 			self.usedBranch="Apy3_m"
@@ -478,6 +486,8 @@ class RecoParameters:
 			FILE.write("nsino-per-chunk            " + self.nsinoperchunk + "\n")
 			FILE.write("SearchWidth                " + self.centerSearchWidth + "\n")
 			FILE.write("Gridrec                    " + str(self.gridrecPadding) + "\n")
+			FILE.write("RemoveStripeMethod         " + str(self.stripeMethod) + "\n")
+			FILE.write("fw-pad-setting             " + str(self.fwpad) + "\n")
 			# FILE.write("Padding                    " + self.zeroPadding + "\n")
 			# FILE.write("Geometry                   " + str(self.geometryIndex) + "\n")
 			# FILE.write("Ring option                " + self.ringOption + "\n")	
@@ -533,6 +543,9 @@ class RecoParameters:
 		self.fields.sliceField.setText(str(self.sliceNumber))
 		self.fields.selectedDatasetField.setText(str(self.FileLocation))
 		self.fields.gridrecChooser.setSelectedIndex(int(self.gridrecPadding))
+		self.fields.stripeMethodChooser.setSelectedIndex(int(self.stripeMethod))
+		self.fields.fwpadChooser.setSelectedIndex(int(self.fwpad))
+
 		
 #	   	if self.branch=="master":
 #	  		self.fields.masterButton.setSelected(True)

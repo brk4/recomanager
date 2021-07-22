@@ -11,12 +11,12 @@ from javax.swing import JButton, JFrame, JPanel, JComboBox, JCheckBox, ButtonGro
 from script.imglib import ImgLib
 from java.awt import event, Font
 from ch.psi.imagej.hdf5 import HDF5Reader, HDF5Utilities
-#from hdf.object.h5 import H5File
+from hdf.object.h5 import H5File
 
 global selectedDatasetField, flatFieldBox, world
 
-#sys.path.append('C:/Users/benny/recomanager-ben/recomanager')
-sys.path.append('/local/fast/conda/recomanager/recomanager')
+sys.path.append('C:/Users/benny/recomanager-ben/recomanager')
+#sys.path.append('/local/fast/conda/recomanager/recomanager')
 
 import RecoPanel
 import RecoParameters
@@ -553,17 +553,37 @@ def reconstruct(event):
             recoParameters.nsinoperchunk=fields.nsinochunkField.getText()
             recoParameters.centerSearchWidth=fields.searchWidthField.getText()
             recoParameters.gridrecPadding=fields.gridrecChooser.getSelectedIndex()
+            recoParameters.stripeMethod=fields.stripeMethodChooser.getSelectedIndex()
+            recoParameters.fwpad=fields.fwpadChooser.getSelectedIndex()
+
             if recoParameters.gridrecPadding == 0:
                 tempstring = "True"
             elif recoParameters.gridrecPadding == 1:
                 tempstring = "False"
             #print(recoParameters.sliceNumber)
+
+            if recoParameters.stripeMethod == 0:
+                stripestring = "none"
+            elif recoParameters.stripeMethod == 1:
+                stripestring = "fw"
+            elif recoParameters.stripeMethod == 2:
+                stripestring = "ti"
+            elif recoParameters.stripeMethod == 3:
+                stripestring = "sf"
+            elif recoParameters.stripeMethod == 4:
+                stripestring = "vo-all"
             #print(recoParameters.centerNumber)
+
+            if recoParameters.fwpad == 0:
+                fwstring = "True"
+            elif recoParameters.fwpad == 1:
+                fwstring = "False"
+
             slicenum = float(recoParameters.sliceNumber)/float(920)
             reconfilelocation = fields.selectedDatasetField.getText()
             recoParameters.FileLocation = fields.selectedDatasetField.getText()
             head_tail = os.path.split(reconfilelocation)
-            command = "tomopy recon --file-name " + reconfilelocation + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type slice " + "--nsino " + str(slicenum) + " --gridrec-padding " + tempstring
+            command = "tomopy recon --file-name " + reconfilelocation + " --rotation-axis " + recoParameters.centerNumber + " --rotation-axis-auto manual " + "--reconstruction-type slice " + "--nsino " + str(slicenum) + " --gridrec-padding " + tempstring + " --remove-stripe-method " + stripestring + " --fw-pad " + fwstring
             print(command)
             recoParameters.writeParametersToFile("GUIParameters.txt")
             os.system(command)
@@ -1049,6 +1069,14 @@ fields.recoSettingsPanel.add(fields.algoChooser)
 fields.recoSettingsPanel.add(fields.gridrecLabel)
 fields.recoSettingsPanel.add(fields.gridrecChooser)
 
+# Remove Stripe Method
+fields.recoSettingsPanel.add(fields.stripeMethodLabel)
+fields.recoSettingsPanel.add(fields.stripeMethodChooser)
+
+# fw-pad
+fields.recoSettingsPanel.add(fields.fwpadLabel)
+fields.recoSettingsPanel.add(fields.fwpadChooser)
+
 #fields.getLastParametersButton.actionPerformed = getLastParameters
 fields.recoSettingsPanel.add(fields.getLastParametersButton)
 
@@ -1190,17 +1218,17 @@ fields.recoSettingsPanel.add(fields.nsinochunkField)
 #fields.recoSettingsPanel.add(fields.postfixField)
 
 # One slice reconstruction
-oneSliceButton = GUI.createButton("Preview one slice",10,165,200,40,12,True)
+oneSliceButton = GUI.createButton("Preview one slice",10,225,200,40,12,True)
 oneSliceButton.actionPerformed=reconstruct
 fields.recoSettingsPanel.add(oneSliceButton)
 
 # Try Reconstruction
-tryButton = GUI.createButton("Try Reconstruction",10,275,200,40,12,True)
+tryButton = GUI.createButton("Try Reconstruction",10,325,200,40,12,True)
 tryButton.actionPerformed=reconstruct
 fields.recoSettingsPanel.add(tryButton)
 
 # Submit to the cluster
-submitButton = GUI.createButton("Submit full stack",10,375,200,40,12,True)
+submitButton = GUI.createButton("Submit full stack",10,425,200,40,12,True)
 submitButton.actionPerformed=reconstruct
 fields.recoSettingsPanel.add(submitButton)
 
@@ -1311,6 +1339,8 @@ elif os.path.exists(os.path.join(home, "GUIParameters.txt")) == False:
     try:
         FILE = open(localFile,"w+")
         FILE.write("Algorithm                  " + "0" +"\n")
+        FILE.write("RemoveStripeMethod         " + "0" +"\n")
+        FILE.write("fw-pad-setting             " + "0" +"\n")
         FILE.write("Rotation                   " + "0" + "\n")
         FILE.write("Center                     " + "1224" + "\n")
         FILE.write("Slice                      " + "460" + "\n")
