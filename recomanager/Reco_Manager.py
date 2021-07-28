@@ -5,6 +5,7 @@ from ij import IJ
 from ij import ImagePlus
 from ij.io import OpenDialog
 from ij.plugin import ImageCalculator
+from ij.plugin import FolderOpener
 from java.awt.event import ActionListener, MouseAdapter
 from javax.swing.event import ChangeEvent, ChangeListener
 from javax.swing import JButton, JFrame, JPanel, JComboBox, JCheckBox, ButtonGroup, JOptionPane
@@ -130,13 +131,12 @@ def reconstruct(event):
         recoParameters.writeParametersToFile("GUIParameters.txt")
         os.system(command)
         tempfilepath = os.path.normpath(head_tail[0]) + "_rec"
-        tempdataset = "recon_" + logfileParameters.dataset.rstrip(".h5") + ".tiff"
+        tempdataset = head_tail[1].rstrip(".h5") + "_rec"
 
-        # list_of_files = glob.glob(os.path.join(tempfilepath, "slice_rec", "*"))
-        # latest_file = max(list_of_files, key=os.path.getctime)
-        # recon_filename = os.path.join(tempfilepath, "slice_rec", tempdataset)
-        # imageResult = IJ.openImage(latest_file)
-        # imageResult.show()
+        fullstring = os.path.join(tempfilepath, tempdataset)
+        options = "virtual"
+        imp = FolderOpener.open(fullstring, options)
+        imp.show()
 
     elif event.getSource() == tryButton:
 
@@ -155,18 +155,11 @@ def reconstruct(event):
         os.system(command)
         tempfilepath = os.path.normpath(head_tail[0]) + "_rec"
         tempdataset = head_tail[1].rstrip(".h5")
-        print(tempfilepath)
-        print(tempdataset)
-        print(reconfilelocation)
 
         trystring = os.path.join(tempfilepath, "try_center", tempdataset)
-        print(trystring)
-
-        # list_of_files = glob.glob(os.path.join(tempfilepath, "slice_rec", "*"))
-        # latest_file = max(list_of_files, key=os.path.getctime)
-        # recon_filename = os.path.join(tempfilepath, "slice_rec", tempdataset)
-        # imageResult = IJ.openImage(latest_file)
-        # imageResult.show()
+        options = "virtual"
+        imp = FolderOpener.open(trystring, options)
+        imp.show()
     
 # Set correct path
 myHost=socket.gethostname()
