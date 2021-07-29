@@ -1,4 +1,4 @@
-import os, glob, time, socket, sys, math
+import os, glob, time, socket, sys, math, shutil
 from os.path import expanduser
 from ij.gui import Line
 from ij import IJ
@@ -132,10 +132,25 @@ def reconstruct(event):
         os.system(command)
         tempfilepath = os.path.normpath(head_tail[0]) + "_rec"
         tempdataset = head_tail[1].rstrip(".h5") + "_rec"
-
+        
         fullstring = os.path.join(tempfilepath, tempdataset)
+        tifffullstring = os.path.join(fullstring, "tiff_files")
+
+        if os.path.isdir(tifffullstring) == True:
+            shutil.rmtree(tifffullstring)
+
+        os.mkdir(tifffullstring)
+
+        for filename in os.listdir(fullstring):
+            if filename.endswith(".tiff"):
+                source = os.path.join(fullstring, filename)
+                destination = os.path.join(tifffullstring, filename)
+                shutil.move(source, destination)
+            else:
+                continue
+
         options = "virtual"
-        imp = FolderOpener.open(fullstring, options)
+        imp = FolderOpener.open(tifffullstring, options)
         imp.show()
 
     elif event.getSource() == tryButton:
@@ -157,8 +172,23 @@ def reconstruct(event):
         tempdataset = head_tail[1].rstrip(".h5")
 
         trystring = os.path.join(tempfilepath, "try_center", tempdataset)
+        tifftrystring = os.path.join(trystring, "tiff_files")
+
+        if os.path.isdir(tifftrystring) == True:
+            shutil.rmtree(tifftrystring)
+
+        os.mkdir(tifftrystring)
+
+        for filename in os.listdir(trystring):
+            if filename.endswith(".tiff"):
+                source = os.path.join(trystring, filename)
+                destination = os.path.join(tifftrystring, filename)
+                shutil.move(source, destination)
+            else:
+                continue
+
         options = "virtual"
-        imp = FolderOpener.open(trystring, options)
+        imp = FolderOpener.open(tifftrystring, options)
         imp.show()
     
 # Set correct path
